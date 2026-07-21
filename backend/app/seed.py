@@ -143,7 +143,7 @@ async def main() -> None:
                     role=UserRole.super_admin,
                 )
             )
-            print(f"Super admin créé: {admin_email})
+            print(f"Super admin créé : {admin_email}")
 
         for data in DIVISIONS:
             division = (
