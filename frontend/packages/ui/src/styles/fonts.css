@@ -1,0 +1,28 @@
+/*
+  Polices auto-hébergées (jamais de <link> Google Fonts en production).
+  Fichiers variables, sous-ensemble latin (couvre le français, y compris œ/æ).
+*/
+
+@font-face {
+	font-family: 'Manrope Variable';
+	font-style: normal;
+	font-weight: 400 800;
+	font-display: swap;
+	src: url('../polices/manrope-variable-latin.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Cormorant Garamond Variable';
+	font-style: normal;
+	font-weight: 500 700;
+	font-display: swap;
+	src: url('../polices/cormorant-variable-latin.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Cormorant Garamond Variable';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('../polices/cormorant-italic-variable-latin.woff2') format('woff2');
+}

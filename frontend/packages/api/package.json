@@ -1,0 +1,22 @@
+{
+  "name": "@iumc/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Client HTTP partagé vers l'API FastAPI d'IUMC",
+  "exports": {
+    ".": {
+      "types": "./src/client.ts",
+      "svelte": "./src/client.ts",
+      "default": "./src/client.ts"
+    },
+    "./server": {
+      "types": "./src/server.ts",
+      "svelte": "./src/server.ts",
+      "default": "./src/server.ts"
+    }
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^2.0.0"
+  }
+}

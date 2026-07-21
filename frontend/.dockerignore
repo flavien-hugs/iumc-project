@@ -1,0 +1,26 @@
+# Réinstallés dans l'image (couche dépendances séparée, cf. Dockerfile) :
+# jamais utile - et bien plus lourd - de les envoyer dans le contexte de build.
+**/node_modules/
+
+# Sorties de build locales, régénérées par `npm run build` dans l'image.
+**/.svelte-kit/
+**/build/
+**/.vercel/
+
+# Environnement local / éditeurs / VCS.
+**/.env
+**/.env.*
+!**/.env.example
+.git/
+.gitignore
+.dockerignore
+.vscode/
+.idea/
+**/.DS_Store
+
+# Logs npm.
+npm-debug.log*
+**/npm-debug.log*
+
+Dockerfile
+docker-compose*.yml

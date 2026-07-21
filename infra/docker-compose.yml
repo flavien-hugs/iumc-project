@@ -1,0 +1,114 @@
+name: iumc
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-iumc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-iumc}
+      POSTGRES_DB: ${POSTGRES_DB:-iumc}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-iumc}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    env_file:
+      - ../backend/.env
+    # Prime sur backend/.env (pensé pour le dev hors conteneur, hôtes localhost) :
+    # dans le réseau compose, PostgreSQL et Redis se joignent par nom de service.
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-iumc}:${POSTGRES_PASSWORD:-iumc}@postgres:5432/${POSTGRES_DB:-iumc}
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_LOCAL_PATH: /data/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - media_data:/data/media
+    ports:
+      - '8000:8000'
+
+  celery-worker:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    command: celery -A app.core.celery_app worker --loglevel=info
+    env_file:
+      - ../backend/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-iumc}:${POSTGRES_PASSWORD:-iumc}@postgres:5432/${POSTGRES_DB:-iumc}
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_LOCAL_PATH: /data/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - media_data:/data/media
+    # Le worker ne sert pas HTTP : remplace le HEALTHCHECK du Dockerfile
+    # (pensé pour le service backend/uvicorn) par un ping Celery.
+    healthcheck:
+      test: ['CMD', 'celery', '-A', 'app.core.celery_app', 'inspect', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  website:
+    build:
+      context: ../frontend
+      dockerfile: apps/website/Dockerfile
+    restart: unless-stopped
+    environment:
+      ORIGIN: http://localhost:3000
+      PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+      # SSR : le serveur Node joint l'API par le réseau compose (ADR-0009/0013).
+      API_INTERNAL_URL: http://backend:8000/api/v1
+    depends_on:
+      - backend
+    ports:
+      - '3000:3000'
+
+  admin:
+    build:
+      context: ../frontend
+      dockerfile: apps/admin/Dockerfile
+    restart: unless-stopped
+    environment:
+      ORIGIN: http://localhost:3001
+      PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    ports:
+      - '3001:3000'
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_data:

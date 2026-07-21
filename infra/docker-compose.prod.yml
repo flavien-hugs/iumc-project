@@ -1,0 +1,42 @@
+name: iumc
+
+services:
+  postgres:
+    ports: []
+
+  redis:
+    ports: []
+
+  backend:
+    restart: always
+    ports: []
+
+  celery-worker:
+    restart: always
+
+  website:
+    restart: always
+    ports: []
+
+  admin:
+    restart: always
+    ports: []
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: always
+    depends_on:
+      - website
+      - admin
+      - backend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot_www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt:ro
+    ports:
+      - '80:80'
+      - '443:443'
+
+volumes:
+  certbot_www:
+  certbot_conf:

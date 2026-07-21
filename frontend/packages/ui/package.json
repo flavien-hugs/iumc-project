@@ -1,0 +1,28 @@
+{
+  "name": "@iumc/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Système de design IUMC : tokens Tailwind, polices auto-hébergées, composants de formulaire",
+  "exports": {
+    "./styles/theme.css": "./src/styles/theme.css",
+    "./formulaire/*": {
+      "svelte": "./src/formulaire/*",
+      "default": "./src/formulaire/*"
+    },
+    "./composants/*": {
+      "svelte": "./src/composants/*",
+      "default": "./src/composants/*"
+    }
+  },
+  "dependencies": {
+    "phosphor-svelte": "^3.1.0",
+    "@tiptap/core": "^2.11.0",
+    "@tiptap/extension-link": "^2.11.0",
+    "@tiptap/extension-placeholder": "^2.11.0",
+    "@tiptap/starter-kit": "^2.11.0"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}

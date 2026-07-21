@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+@import './fonts.css';
+
+/* Fait scanner les composants de ce package par Tailwind, quel que soit le
+   projet consommateur (les apps du monorepo n'analysent pas node_modules). */
+@source '../';
+
+/*
+  Système de design IUMC — palette provisoire (à valider par IUMC, cf. PRD section 24).
+
+  Règle de cohérence des couleurs : l'or (--color-gold-*) est la SEULE couleur
+  d'accent de toute la plateforme — CTA, liens, focus, navigation active et
+  mises en valeur de texte (gras doré). Elle peut être utilisée plus
+  richement (texte, survols de navigation, filigranes) mais jamais mélangée
+  à une autre teinte d'accent. Le vert forêt (--color-forest-*) reste une
+  exception documentée : il ne sert QUE de couleur de badge pour le pôle
+  Agropastoral (catégorisation), jamais comme accent d'interface général.
+*/
+@theme {
+	--font-display: 'Cormorant Garamond Variable', ui-serif, Georgia, serif;
+	--font-sans:
+		'Manrope Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+	/* Bleu marine — couleur d'ancrage (confiance, institutionnel) */
+	--color-ink-950: #0b1526;
+	--color-ink-900: #10192e;
+	--color-ink-800: #1b2942;
+	--color-ink-700: #2a3b5c;
+	--color-ink-600: #3f5480;
+
+	/* Blanc cassé froid — fond */
+	--color-paper-50: #f8f9fb;
+	--color-paper-100: #eff1f5;
+	--color-paper-200: #e2e6ed;
+
+	/* Or antique — unique accent CTA/liens/focus de toute la plateforme */
+	--color-gold-200: #e8d9a8;
+	--color-gold-500: #c9a227;
+	--color-gold-600: #ad8720;
+
+	/* Vert forêt — exception : badge du pôle Agropastoral uniquement */
+	--color-forest-100: #dce8e3;
+	--color-forest-600: #1f4b3f;
+
+	--radius-card: 0.75rem;
+	--radius-input: 0.5rem;
+	--radius-pill: 999px;
+}
+
+@layer base {
+	body {
+		background-color: var(--color-paper-50);
+		color: var(--color-ink-950);
+		font-family: var(--font-sans);
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-display);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+}
+
+/*
+  Habillage typographique du HTML produit par l'éditeur riche du panel
+  (Tiptap ; balises autorisées par le nettoyage bleach côté API : p, h2, h3,
+  strong, em, ul, ol, li, a, br). Partagée par l'aperçu d'édition du panel et
+  le rendu public, pour qu'un contenu affiche la même mise en forme à la
+  rédaction et une fois publié. Couleur et taille de base restent héritées du
+  conteneur appelant (classes Tailwind existantes).
+*/
+.iumc-rich-text p {
+	margin: 0 0 1em;
+	line-height: 1.6;
+}
+.iumc-rich-text p:last-child {
+	margin-bottom: 0;
+}
+.iumc-rich-text h2 {
+	margin: 1.4em 0 0.5em;
+	font-family: var(--font-display);
+	font-size: 1.35em;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+.iumc-rich-text h3 {
+	margin: 1.2em 0 0.4em;
+	font-family: var(--font-display);
+	font-size: 1.15em;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+.iumc-rich-text ul,
+.iumc-rich-text ol {
+	margin: 0 0 1em;
+	padding-left: 1.4em;
+}
+.iumc-rich-text ul {
+	list-style: disc;
+}
+.iumc-rich-text ol {
+	list-style: decimal;
+}
+.iumc-rich-text a {
+	color: var(--color-gold-600);
+	text-decoration: underline;
+	text-decoration-color: color-mix(in srgb, var(--color-gold-600) 45%, transparent);
+}
+.iumc-rich-text strong {
+	font-weight: 700;
+}
+.iumc-rich-text > :last-child {
+	margin-bottom: 0;
+}
+
+/* Révélation au scroll (voir $lib/actions/reveal.ts) */
+.reveal-init {
+	opacity: 0;
+	transform: translateY(24px);
+	transition:
+		opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-init.reveal-in {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/*
+  Parallaxe au scroll en CSS pur (scroll-driven animations), sans aucun
+  écouteur JS de scroll. Dégradation silencieuse (position statique) sur les
+  navigateurs qui ne supportent pas encore animation-timeline.
+*/
+@supports (animation-timeline: view()) {
+	.parallax-lent {
+		animation: parallaxe-verticale linear;
+		animation-timeline: view();
+		animation-range: entry 0% cover 60%;
+	}
+	.parallax-inverse {
+		animation: parallaxe-verticale-inverse linear;
+		animation-timeline: view();
+		animation-range: entry 0% cover 60%;
+	}
+}
+
+@keyframes parallaxe-verticale {
+	from {
+		transform: translateY(-28px);
+	}
+	to {
+		transform: translateY(28px);
+	}
+}
+
+@keyframes parallaxe-verticale-inverse {
+	from {
+		transform: translateY(20px);
+	}
+	to {
+		transform: translateY(-20px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal-init {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+	.parallax-lent,
+	.parallax-inverse {
+		animation: none;
+	}
+}

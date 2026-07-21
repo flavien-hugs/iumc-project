@@ -1,0 +1,35 @@
+# Environnement / secrets
+.env
+.env.*
+!.env.example
+!*/.env.example
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+backend/storage_dev/
+
+# Node / npm workspaces (frontend)
+node_modules/
+.svelte-kit/
+build/
+.vercel/
+npm-debug.log*
+
+# Docker
+docker-compose.override.yml
+
+# Éditeurs / outils
+.vscode/
+.idea/
+*.swp
+
+# Système
+.DS_Store
+Thumbs.db
+.claude
