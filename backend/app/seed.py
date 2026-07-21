@@ -5,10 +5,10 @@ Le mot de passe du super admin se règle via SEED_ADMIN_PASSWORD (défaut de dev
 """
 
 import asyncio
-import os
 
 from sqlalchemy import select
 
+from app.core.config import settings
 from app.core.db import async_session_factory
 from app.core.security import hash_password
 from app.models import Division, DivisionStatus, Location, LocationStatus, Service, User, UserRole
@@ -127,20 +127,23 @@ PLANNED_CITIES = [
 
 async def main() -> None:
     async with async_session_factory() as db:
+
+        admin_email = settings.seed_admin_email
+        admin_password = settings.seed_admin_password
+        
         existing_admin = (
-            await db.execute(select(User).where(User.email == "admin@iumc.ci"))
+            await db.execute(select(User).where(User.email == admin_email))
         ).scalar_one_or_none()
         if existing_admin is None:
-            password = os.environ.get("SEED_ADMIN_PASSWORD", "ChangerMoi!2026")
             db.add(
                 User(
                     name="Administrateur IUMC",
-                    email="admin@iumc.ci",
-                    password_hash=hash_password(password),
+                    email=admin_email,
+                    password_hash=hash_password(admin_password),
                     role=UserRole.super_admin,
                 )
             )
-            print("Super admin créé : admin@iumc.ci")
+            print(f"Super admin créé: {admin_email})
 
         for data in DIVISIONS:
             division = (

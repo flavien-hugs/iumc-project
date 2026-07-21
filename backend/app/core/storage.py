@@ -9,9 +9,8 @@ import re
 import uuid
 from pathlib import Path
 
-from app.core.config import get_settings
+from app.core.config import settings
 
-settings = get_settings()
 
 _SAFE_RELATIVE_PATH = re.compile(r"^[a-z_]+/[a-f0-9]{32}\.[a-z0-9]{2,5}$")
 
