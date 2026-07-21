@@ -10,7 +10,17 @@ from sqlalchemy.orm import selectinload
 from app.core.db import DbSession
 from app.core.pagination import Page, PageParams, paginate
 from app.core.sanitize import sanitize_html
-from app.models import Division, DivisionStatus, Service, ServiceStatus, User, UserRole
+from app.models import (
+    Article,
+    ArticleStatus,
+    Division,
+    DivisionStatus,
+    Faq,
+    Service,
+    ServiceStatus,
+    User,
+    UserRole,
+)
 from app.modules.audit.service import log_action
 from app.modules.auth.deps import CurrentUser, require_roles
 
@@ -192,8 +202,6 @@ async def restore_service(service_id: int, db: DbSession, user: CurrentUser) -> 
 # Articles (PRD section 10.6 / CDC section 8.8)
 # ---------------------------------------------------------------------------
 
-from app.models import Article, ArticleStatus
-
 
 class ArticleRow(BaseModel):
     id: int
@@ -330,8 +338,6 @@ async def delete_article(article_id: int, db: DbSession, user: CurrentUser) -> N
 # ---------------------------------------------------------------------------
 # FAQ (PRD section 10.9 / CDC section 8.9)
 # ---------------------------------------------------------------------------
-
-from app.models import Faq
 
 
 class FaqRow(BaseModel):

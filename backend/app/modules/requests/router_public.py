@@ -9,13 +9,6 @@ from app.core.config import get_settings
 from app.core.db import DbSession
 from app.core.rate_limit import limit_submissions
 from app.core.storage import full_path, save_bytes
-from app.modules.notifications.service import publish_notification
-from app.modules.requests.tasks import send_acknowledgment
-
-settings = get_settings()
-
-# Formats de pièces jointes autorisés (PRD section 10.8).
-ALLOWED_ATTACHMENT_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
 from app.models import (
     ClientType,
     ContactPreference,
@@ -28,6 +21,13 @@ from app.models import (
     User,
     UserRole,
 )
+from app.modules.notifications.service import publish_notification
+from app.modules.requests.tasks import send_acknowledgment
+
+settings = get_settings()
+
+# Formats de pièces jointes autorisés (PRD section 10.8).
+ALLOWED_ATTACHMENT_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
 
 router = APIRouter(tags=["service-requests"])
 
