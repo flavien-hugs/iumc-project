@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { apiCall, ApiError } from '@iumc/api';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
+	import AuthCard from '$lib/AuthCard.svelte';
 
 	const token = page.url.searchParams.get('token') ?? '';
 
@@ -33,7 +34,7 @@
 	<title>Nouveau mot de passe, panel IUMC</title>
 </svelte:head>
 
-<div class="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
+<AuthCard>
 	<div class="flex items-center gap-3">
 		<img src="/logo-iumc-embleme.png" alt="" class="h-12 w-auto" />
 		<img src="/logo-iumc-wordmark.png" alt="IUMC" class="h-6 w-auto" />
@@ -63,4 +64,4 @@
 			</button>
 		</form>
 	{/if}
-</div>
+</AuthCard>

@@ -2,6 +2,7 @@
 	import { EnvelopeSimple } from 'phosphor-svelte';
 	import { apiCall, ApiError } from '@iumc/api';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
+	import AuthCard from '$lib/AuthCard.svelte';
 
 	let email = $state('');
 	let sent = $state(false);
@@ -27,7 +28,7 @@
 	<title>Mot de passe oublié, panel IUMC</title>
 </svelte:head>
 
-<div class="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
+<AuthCard>
 	<div class="flex items-center gap-3">
 		<img src="/logo-iumc-embleme.png" alt="" class="h-12 w-auto" />
 		<img src="/logo-iumc-wordmark.png" alt="IUMC" class="h-6 w-auto" />
@@ -55,4 +56,4 @@
 			<a href="/admin/login" class="text-center text-xs text-ink-800/60 hover:text-ink-900">Retour à la connexion</a>
 		</form>
 	{/if}
-</div>
+</AuthCard>

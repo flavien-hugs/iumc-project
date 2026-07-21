@@ -18,7 +18,7 @@
 	import { apiCall, API_BASE, ApiError } from '@iumc/api';
 	import type { PublicDivision } from '$lib/content';
 	import Seo from '$lib/components/Seo.svelte';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
 	import TextareaField from '@iumc/ui/formulaire/TextareaField.svelte';
 	import SearchSelect from '@iumc/ui/formulaire/SearchSelect.svelte';

@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { apiCall, ApiError } from '@iumc/api';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
+	import AuthCard from '$lib/AuthCard.svelte';
 
 	let email = $state('');
 	let password = $state('');
@@ -34,7 +35,7 @@
 	<title>Connexion, panel IUMC</title>
 </svelte:head>
 
-<div class="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
+<AuthCard>
 	<div class="flex items-center gap-3">
 		<img src="/logo-iumc-embleme.png" alt="" class="h-12 w-auto" />
 		<img src="/logo-iumc-wordmark.png" alt="IUMC" class="h-6 w-auto" />
@@ -83,4 +84,4 @@
 			Retour au site
 		</a>
 	</form>
-</div>
+</AuthCard>

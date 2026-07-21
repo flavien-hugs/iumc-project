@@ -3,7 +3,7 @@
 	import Seo from '$lib/components/Seo.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
 	import TextareaField from '@iumc/ui/formulaire/TextareaField.svelte';
-	import GoldWeightMotif from '$lib/illustrations/GoldWeightMotif.svelte';
+	import GoldWeightMotif from '@iumc/ui/illustrations/GoldWeightMotif.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import { apiCall, ApiError } from '@iumc/api';
 

@@ -13,6 +13,10 @@
     "./composants/*": {
       "svelte": "./src/composants/*",
       "default": "./src/composants/*"
+    },
+    "./illustrations/*": {
+      "svelte": "./src/illustrations/*",
+      "default": "./src/illustrations/*"
     }
   },
   "dependencies": {

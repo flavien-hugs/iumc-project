@@ -2,7 +2,7 @@
 	import { ArrowRight } from 'phosphor-svelte';
 	import { divisionIcon } from '$lib/content';
 	import Seo from '$lib/components/Seo.svelte';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import type { PageProps } from './$types';
 

@@ -2,8 +2,8 @@
 	import { MapPin, Phone, WhatsappLogo } from 'phosphor-svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import CoteDIvoireMap from '$lib/illustrations/CoteDIvoireMap.svelte';
-	import KenteMotif from '$lib/illustrations/KenteMotif.svelte';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import KenteMotif from '@iumc/ui/illustrations/KenteMotif.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import { LOCATION_STATUS_LABELS } from '$lib/content';
 	import type { PageProps } from './$types';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import KenteMotif from '$lib/illustrations/KenteMotif.svelte';
+	import KenteMotif from '@iumc/ui/illustrations/KenteMotif.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import {
 		articleIcon,

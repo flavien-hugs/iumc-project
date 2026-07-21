@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ArrowRight, Buildings, Calendar, MapPin } from 'phosphor-svelte';
 	import Seo from '$lib/components/Seo.svelte';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
-	import GoldWeightMotif from '$lib/illustrations/GoldWeightMotif.svelte';
-	import KenteMotif from '$lib/illustrations/KenteMotif.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
+	import GoldWeightMotif from '@iumc/ui/illustrations/GoldWeightMotif.svelte';
+	import KenteMotif from '@iumc/ui/illustrations/KenteMotif.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import type { PageProps } from './$types';
 
