@@ -10,7 +10,6 @@ FROM node:22-alpine AS deps
 WORKDIR /repo
 COPY package.json package-lock.json ./
 COPY apps/website/package.json apps/website/
-COPY apps/admin/package.json apps/admin/
 COPY packages/ui/package.json packages/ui/
 COPY packages/api/package.json packages/api/
 RUN npm ci
