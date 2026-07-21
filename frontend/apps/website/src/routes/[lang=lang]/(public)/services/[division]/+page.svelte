@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowRight } from 'phosphor-svelte';
 	import { divisionIcon } from '$lib/content';
+	import Seo from '$lib/components/Seo.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -8,10 +9,10 @@
 	const Icon = $derived(divisionIcon(division.slug));
 </script>
 
-<svelte:head>
-	<title>{division.name}, IUMC</title>
-	<meta name="description" content={division.short_description} />
-</svelte:head>
+<Seo
+	title={`${division.name}, IUMC`}
+	description={division.short_description ?? division.name}
+/>
 
 <section class="mx-auto grid max-w-7xl items-start gap-12 px-6 pt-16 pb-16 md:grid-cols-2 lg:px-10">
 	<div>
@@ -20,7 +21,7 @@
 		<p class="mt-4 max-w-[52ch] text-ink-800/80">{division.full_description}</p>
 		<a
 			href="/fr/demande"
-			class="mt-6 inline-flex items-center gap-2 rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98]"
+			class="mt-6 inline-flex items-center gap-2 rounded-pill bg-green-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98]"
 		>
 			Demander un accompagnement
 			<ArrowRight size={16} />
@@ -37,7 +38,7 @@
 				<li>
 					<a
 						href={`/fr/services/${division.slug}/${service.slug}`}
-						class="group flex items-center justify-between gap-4 py-3 text-sm text-paper-100/85 hover:text-gold-500"
+						class="group flex items-center justify-between gap-4 py-3 text-sm text-paper-100/85 hover:text-green-500"
 					>
 						{service.title}
 						<ArrowRight

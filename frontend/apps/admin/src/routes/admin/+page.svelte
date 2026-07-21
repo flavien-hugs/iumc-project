@@ -27,7 +27,7 @@
 	{#each cards as card (card.label)}
 		<div class="rounded-card border border-ink-900/10 bg-paper-50 p-5">
 			<p
-				class={`font-display text-3xl font-bold ${card.accent ? 'text-gold-600' : 'text-ink-950'}`}
+				class={`font-display text-3xl font-bold ${card.accent ? 'text-green-600' : 'text-ink-950'}`}
 			>
 				{card.value}
 			</p>

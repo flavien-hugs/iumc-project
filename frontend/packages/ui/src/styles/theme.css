@@ -6,41 +6,51 @@
 @source '../';
 
 /*
-  Système de design IUMC — palette provisoire (à valider par IUMC, cf. PRD section 24).
+  Système de design IUMC — palette alignée sur le logo officiel
+  (fibres violet/cyan, wordmark vert, tagline or, fond noir).
 
-  Règle de cohérence des couleurs : l'or (--color-gold-*) est la SEULE couleur
-  d'accent de toute la plateforme — CTA, liens, focus, navigation active et
-  mises en valeur de texte (gras doré). Elle peut être utilisée plus
-  richement (texte, survols de navigation, filigranes) mais jamais mélangée
-  à une autre teinte d'accent. Le vert forêt (--color-forest-*) reste une
-  exception documentée : il ne sert QUE de couleur de badge pour le pôle
-  Agropastoral (catégorisation), jamais comme accent d'interface général.
+  Règle de cohérence des couleurs : le vert du wordmark (--color-green-*)
+  est la SEULE couleur d'accent d'interface de toute la plateforme — CTA,
+  liens, focus, navigation active et mises en valeur de texte. L'or de la
+  tagline (--color-gold-*) est un fil décoratif culturel : frises et motifs
+  uniquement, jamais un accent d'interface. Le cyan du sceau
+  (--color-cyan-*) ne sert QUE de couleur de badge pour le pôle
+  Agropastoral (catégorisation) ; le violet (--color-violet-*) est réservé
+  à une future catégorisation, sans usage à ce jour.
 */
 @theme {
 	--font-display: 'Cormorant Garamond Variable', ui-serif, Georgia, serif;
 	--font-sans:
 		'Manrope Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-	/* Bleu marine — couleur d'ancrage (confiance, institutionnel) */
-	--color-ink-950: #0b1526;
-	--color-ink-900: #10192e;
-	--color-ink-800: #1b2942;
-	--color-ink-700: #2a3b5c;
-	--color-ink-600: #3f5480;
+	/* Noir profond du logo — ancrage (léger cast végétal) */
+	--color-ink-950: #0b0f0c;
+	--color-ink-900: #121713;
+	--color-ink-800: #1d2620;
+	--color-ink-700: #2f3d33;
+	--color-ink-600: #47594c;
 
-	/* Blanc cassé froid — fond */
-	--color-paper-50: #f8f9fb;
-	--color-paper-100: #eff1f5;
-	--color-paper-200: #e2e6ed;
+	/* Blanc cassé, très légère teinte chlorophylle — fond */
+	--color-paper-50: #f7faf5;
+	--color-paper-100: #edf3e9;
+	--color-paper-200: #dee8d8;
 
-	/* Or antique — unique accent CTA/liens/focus de toute la plateforme */
-	--color-gold-200: #e8d9a8;
-	--color-gold-500: #c9a227;
-	--color-gold-600: #ad8720;
+	/* Vert du wordmark — unique accent d'interface de toute la plateforme */
+	--color-green-200: #d8edbe;
+	--color-green-500: #80c048;
+	--color-green-600: #578a2b;
 
-	/* Vert forêt — exception : badge du pôle Agropastoral uniquement */
-	--color-forest-100: #dce8e3;
-	--color-forest-600: #1f4b3f;
+	/* Or de la tagline — fil décoratif culturel (frises, motifs) uniquement */
+	--color-gold-200: #fce9a8;
+	--color-gold-500: #e9c94f;
+	--color-gold-600: #cfa93a;
+
+	/* Cyan du sceau — badge du pôle Agropastoral uniquement */
+	--color-cyan-100: #d9f3fa;
+	--color-cyan-600: #0f96b8;
+
+	/* Violet du sceau — réservé (catégorisation future) */
+	--color-violet-600: #8018e8;
 
 	--radius-card: 0.75rem;
 	--radius-input: 0.5rem;
@@ -105,12 +115,18 @@
 	list-style: decimal;
 }
 .iumc-rich-text a {
-	color: var(--color-gold-600);
+	color: var(--color-green-600);
 	text-decoration: underline;
-	text-decoration-color: color-mix(in srgb, var(--color-gold-600) 45%, transparent);
+	text-decoration-color: color-mix(in srgb, var(--color-green-600) 45%, transparent);
 }
 .iumc-rich-text strong {
 	font-weight: 700;
+}
+.iumc-rich-text img {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--radius-card);
+	margin: 1em 0;
 }
 .iumc-rich-text > :last-child {
 	margin-bottom: 0;
@@ -173,6 +189,33 @@
 	}
 	.parallax-lent,
 	.parallax-inverse {
+		animation: none;
+	}
+}
+
+/*
+  Bandeau défilant infini (voir marquee-band/marquee-track dans les pages) :
+  deux copies identiques du contenu côte à côte, translation de -50% pour une
+  boucle parfaitement continue. Pause au survol/focus, coupé si l'utilisateur
+  préfère réduire les animations (le contenu réel reste lisible, statique).
+*/
+.marquee-track {
+	animation: marquee-defilement 32s linear infinite;
+}
+.marquee-band:hover .marquee-track,
+.marquee-band:focus-within .marquee-track {
+	animation-play-state: paused;
+}
+@keyframes marquee-defilement {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.marquee-track {
 		animation: none;
 	}
 }

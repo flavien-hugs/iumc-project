@@ -6,6 +6,7 @@ export interface ServiceRow {
 	title: string;
 	slug: string;
 	status: string;
+	deleted_at: string | null;
 }
 
 export interface DivisionRow {

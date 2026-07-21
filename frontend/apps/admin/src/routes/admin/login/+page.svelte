@@ -35,8 +35,11 @@
 </svelte:head>
 
 <div class="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
-	<p class="font-display text-3xl font-semibold text-ink-950">IUMC</p>
-	<h1 class="mt-1 text-lg font-medium text-ink-800">Connexion au panel</h1>
+	<div class="flex items-center gap-3">
+		<img src="/logo-iumc-embleme.png" alt="" class="h-12 w-auto" />
+		<img src="/logo-iumc-wordmark.png" alt="IUMC" class="h-6 w-auto" />
+	</div>
+	<h1 class="mt-4 text-lg font-medium text-ink-800">Connexion au panel</h1>
 
 	<form class="mt-8 flex flex-col gap-4" onsubmit={login}>
 		<TextField
@@ -68,7 +71,7 @@
 		<button
 			type="submit"
 			disabled={submitting}
-			class="mt-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+			class="mt-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 		>
 			{submitting ? 'Connexion…' : 'Se connecter'}
 		</button>

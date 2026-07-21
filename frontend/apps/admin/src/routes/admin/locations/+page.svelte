@@ -1,9 +1,14 @@
 <script lang="ts">
 	import {
 		Buildings,
+		CheckCircle,
 		Clock,
 		EnvelopeSimple,
+		Eye,
+		FloppyDisk,
+		FunnelSimple,
 		House,
+		MagnifyingGlass,
 		MapPin,
 		MapPinLine,
 		Phone,
@@ -19,14 +24,52 @@
 	import Drawer from '@iumc/ui/composants/Drawer.svelte';
 	import Pagination from '@iumc/ui/composants/Pagination.svelte';
 	import ConfirmDialog from '@iumc/ui/composants/ConfirmDialog.svelte';
+	import Toolbar from '@iumc/ui/composants/Toolbar.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
+	import SearchSelect from '@iumc/ui/formulaire/SearchSelect.svelte';
 	import RichTextEditor from '@iumc/ui/formulaire/RichTextEditor.svelte';
 	import { LOCATION_STATUS_LABELS, formatDateTime } from '$lib/labels';
 	import type { LocationRow } from './+page';
 	import type { PageProps } from './$types';
 
+	const statusFormOptions = Object.entries(LOCATION_STATUS_LABELS).map(([value, label]) => ({
+		value,
+		label
+	}));
+	const statusOptions = [{ value: '', label: 'Tous les statuts' }, ...statusFormOptions];
+
 	let { data }: PageProps = $props();
 	const locationsPage = $derived(data.locationsPage);
+
+	let searchText = $state(data.q);
+	let statusValue = $state(data.status);
+	let refreshing = $state(false);
+
+	function applyFilters(overrides: Record<string, string> = {}) {
+		const params = new URLSearchParams();
+		const q = overrides.q ?? searchText;
+		const status = overrides.status ?? statusValue;
+		if (q.trim()) params.set('q', q.trim());
+		if (status) params.set('status', status);
+		goto(`/admin/locations${params.size > 0 ? `?${params}` : ''}`, { keepFocus: true });
+	}
+
+	function resetFilters() {
+		searchText = '';
+		statusValue = '';
+		applyFilters({ q: '', status: '' });
+	}
+
+	async function refresh() {
+		refreshing = true;
+		try {
+			await invalidateAll();
+		} finally {
+			refreshing = false;
+		}
+	}
+
+	const hasActiveFilters = $derived(Boolean(data.q || data.status));
 
 	type LocationForm = {
 		name: string;
@@ -136,22 +179,23 @@
 		}
 	}
 
-	let confirmDeleteOpen = $state(false);
+	let deleteTargetId = $state<number | null>(null);
 	let deleteLoading = $state(false);
 	let deleteError = $state('');
 
-	function requestDelete() {
+	function requestDelete(id: number, event?: MouseEvent) {
+		event?.stopPropagation();
+		deleteTargetId = id;
 		deleteError = '';
-		confirmDeleteOpen = true;
 	}
 
 	async function confirmDelete() {
-		if (editingId === null) return;
+		if (deleteTargetId === null) return;
 		deleteLoading = true;
 		deleteError = '';
 		try {
-			await apiCall(`/admin/locations/${editingId}`, { method: 'DELETE' });
-			confirmDeleteOpen = false;
+			await apiCall(`/admin/locations/${deleteTargetId}`, { method: 'DELETE' });
+			deleteTargetId = null;
 			drawerOpen = false;
 			await invalidateAll();
 		} catch (exception) {
@@ -172,20 +216,70 @@
 	<title>Implantations, panel IUMC</title>
 </svelte:head>
 
-<div class="flex flex-wrap items-center justify-between gap-4">
-	<div>
-		<h1 class="text-3xl font-semibold text-ink-950">Implantations</h1>
-		<p class="mt-2 text-sm text-ink-800/70">Siège et villes d'expansion affichées sur le site.</p>
-	</div>
-	<button
-		type="button"
-		onclick={openCreate}
-		class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
-	>
-		<Plus size={16} />
-		Ajouter une implantation
-	</button>
+<div>
+	<h1 class="text-3xl font-semibold text-ink-950">Implantations</h1>
+	<p class="mt-2 text-sm text-ink-800/70">Siège et villes d'expansion affichées sur le site.</p>
 </div>
+
+<Toolbar onRefresh={refresh} {refreshing}>
+	{#snippet filters()}
+		<form
+			class="flex flex-wrap items-end gap-3"
+			onsubmit={(event) => {
+				event.preventDefault();
+				applyFilters();
+			}}
+		>
+			<div class="w-72">
+				<TextField
+					id="q"
+					label="Recherche"
+					icon={MagnifyingGlass}
+					placeholder="Nom, ville, quartier…"
+					bind:value={searchText}
+					compact
+				/>
+			</div>
+			<div class="w-56">
+				<SearchSelect
+					id="status-filter"
+					label="Statut"
+					icon={CheckCircle}
+					options={statusOptions}
+					bind:value={statusValue}
+					onchange={() => applyFilters()}
+					compact
+				/>
+			</div>
+			<button
+				type="submit"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
+			>
+				<FunnelSimple size={16} />
+				Filtrer
+			</button>
+			{#if hasActiveFilters}
+				<button
+					type="button"
+					onclick={resetFilters}
+					class="rounded-pill border border-ink-900/20 px-4 py-2.5 text-sm font-medium text-ink-900 hover:border-ink-900/40"
+				>
+					Réinitialiser
+				</button>
+			{/if}
+		</form>
+	{/snippet}
+	{#snippet primaryAction()}
+		<button
+			type="button"
+			onclick={openCreate}
+			class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
+		>
+			<Plus size={16} />
+			Ajouter une implantation
+		</button>
+	{/snippet}
+</Toolbar>
 
 {#if locationsPage.items.length === 0}
 	<div
@@ -205,6 +299,7 @@
 					<th class="px-4 py-3 font-medium">Téléphone</th>
 					<th class="px-4 py-3 font-medium">Visible</th>
 					<th class="px-4 py-3 font-medium">Mise à jour</th>
+					<th class="px-4 py-3 font-medium">Actions</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-ink-900/5">
@@ -219,7 +314,7 @@
 						</td>
 						<td class="px-4 py-3">
 							<span
-								class={`rounded-pill px-2.5 py-1 text-xs font-medium ${location.status === 'headquarters' ? 'bg-gold-500/15 text-gold-600' : 'bg-ink-900/5 text-ink-800/70'}`}
+								class={`rounded-pill px-2.5 py-1 text-xs font-medium ${location.status === 'headquarters' ? 'bg-green-500/15 text-green-600' : 'bg-ink-900/5 text-ink-800/70'}`}
 							>
 								{LOCATION_STATUS_LABELS[location.status] ?? location.status}
 							</span>
@@ -228,6 +323,31 @@
 						<td class="px-4 py-3 text-ink-800">{location.is_visible ? 'Oui' : 'Non'}</td>
 						<td class="px-4 py-3 whitespace-nowrap text-ink-800/70">
 							{formatDateTime(location.updated_at)}
+						</td>
+						<td class="px-4 py-3">
+							<div class="flex items-center gap-1">
+								<button
+									type="button"
+									title="Voir le détail"
+									aria-label="Voir le détail"
+									onclick={(event) => {
+										event.stopPropagation();
+										openEdit(location);
+									}}
+									class="rounded-input p-1.5 text-ink-800/60 hover:bg-ink-900/5 hover:text-ink-950"
+								>
+									<Eye size={16} />
+								</button>
+								<button
+									type="button"
+									title="Supprimer"
+									aria-label="Supprimer"
+									onclick={(event) => requestDelete(location.id, event)}
+									class="rounded-input p-1.5 text-ink-800/60 hover:bg-ink-900/5 hover:text-ink-950"
+								>
+									<Trash size={16} />
+								</button>
+							</div>
 						</td>
 					</tr>
 				{/each}
@@ -256,18 +376,14 @@
 
 		<div class="grid gap-4 sm:grid-cols-2">
 			<TextField id="loc-district" label="Commune / quartier" icon={Signpost} bind:value={form.district} />
-			<div class="flex flex-col gap-1.5">
-				<label for="loc-status" class="text-sm font-medium text-ink-900">Statut</label>
-				<select
-					id="loc-status"
-					bind:value={form.status}
-					class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
-				>
-					{#each Object.entries(LOCATION_STATUS_LABELS) as [value, label] (value)}
-						<option {value}>{label}</option>
-					{/each}
-				</select>
-			</div>
+			<SearchSelect
+				id="loc-status"
+				label="Statut"
+				icon={CheckCircle}
+				options={statusFormOptions}
+				required
+				bind:value={form.status}
+			/>
 		</div>
 
 		<TextField id="loc-address" label="Adresse" icon={House} bind:value={form.address} />
@@ -298,7 +414,7 @@
 		/>
 
 		<label class="flex items-center gap-2 text-sm text-ink-800">
-			<input type="checkbox" bind:checked={form.is_visible} class="accent-gold-500" />
+			<input type="checkbox" bind:checked={form.is_visible} class="accent-green-500" />
 			Visible sur le site public
 		</label>
 
@@ -310,14 +426,20 @@
 			<button
 				type="submit"
 				disabled={saving}
-				class="rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
-				{editingId === null ? 'Créer' : 'Enregistrer'}
+				{#if editingId === null}
+					<Plus size={16} />
+					Créer
+				{:else}
+					<FloppyDisk size={16} />
+					Enregistrer
+				{/if}
 			</button>
 			{#if editingId !== null}
 				<button
 					type="button"
-					onclick={requestDelete}
+					onclick={() => requestDelete(editingId as number)}
 					class="inline-flex items-center gap-2 rounded-pill border border-ink-900/20 px-4 py-2 text-sm font-medium text-ink-800/70 hover:border-ink-900/40"
 				>
 					<Trash size={14} />
@@ -329,7 +451,7 @@
 </Drawer>
 
 <ConfirmDialog
-	open={confirmDeleteOpen}
+	open={deleteTargetId !== null}
 	title="Supprimer cette implantation ?"
 	description="Cette action est définitive et retire l'implantation du site public."
 	confirmLabel="Supprimer"
@@ -337,5 +459,5 @@
 	loading={deleteLoading}
 	error={deleteError}
 	onconfirm={confirmDelete}
-	oncancel={() => (confirmDeleteOpen = false)}
+	oncancel={() => (deleteTargetId = null)}
 />

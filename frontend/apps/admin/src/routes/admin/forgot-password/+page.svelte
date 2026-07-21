@@ -28,11 +28,14 @@
 </svelte:head>
 
 <div class="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
-	<p class="font-display text-3xl font-semibold text-ink-950">IUMC</p>
-	<h1 class="mt-1 text-lg font-medium text-ink-800">Mot de passe oublié</h1>
+	<div class="flex items-center gap-3">
+		<img src="/logo-iumc-embleme.png" alt="" class="h-12 w-auto" />
+		<img src="/logo-iumc-wordmark.png" alt="IUMC" class="h-6 w-auto" />
+	</div>
+	<h1 class="mt-4 text-lg font-medium text-ink-800">Mot de passe oublié</h1>
 
 	{#if sent}
-		<p class="mt-8 rounded-input bg-gold-500/10 px-4 py-3 text-sm text-gold-600">
+		<p class="mt-8 rounded-input bg-green-500/10 px-4 py-3 text-sm text-green-600">
 			Si un compte existe avec cette adresse, un e-mail contenant un lien de
 			réinitialisation (valable 1 heure) vient de lui être envoyé.
 		</p>
@@ -46,7 +49,7 @@
 				<p class="rounded-input bg-ink-900/5 px-3 py-2.5 text-sm text-ink-900" role="alert">{error}</p>
 			{/if}
 			<button type="submit" disabled={submitting}
-				class="mt-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60">
+				class="mt-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60">
 				{submitting ? 'Envoi…' : 'Envoyer le lien'}
 			</button>
 			<a href="/admin/login" class="text-center text-xs text-ink-800/60 hover:text-ink-900">Retour à la connexion</a>

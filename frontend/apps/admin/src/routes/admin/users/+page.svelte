@@ -2,6 +2,7 @@
 	import {
 		ArrowCounterClockwise,
 		EnvelopeSimple,
+		FloppyDisk,
 		IdentificationCard,
 		LockKey,
 		MapPin,
@@ -9,7 +10,8 @@
 		Plus,
 		Trash,
 		UserCircleCheck,
-		UserCircleMinus
+		UserCircleMinus,
+		UserGear
 	} from 'phosphor-svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
@@ -33,6 +35,8 @@
 			label: `${location.name} — ${location.city}`
 		}))
 	]);
+
+	const roleOptions = Object.entries(ROLE_LABELS).map(([value, label]) => ({ value, label }));
 
 	// --- Création ---------------------------------------------------------
 
@@ -217,7 +221,7 @@
 	<button
 		type="button"
 		onclick={openCreate}
-		class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+		class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 	>
 		<Plus size={16} />
 		Créer un compte
@@ -229,7 +233,7 @@
 		type="checkbox"
 		checked={data.includeDeleted}
 		onchange={toggleIncludeDeleted}
-		class="accent-gold-500"
+		class="accent-green-500"
 	/>
 	Afficher les comptes supprimés
 </label>
@@ -272,7 +276,7 @@
 							<span
 								class={`rounded-pill px-3 py-1 text-xs font-medium ${
 									user.is_active
-										? 'bg-gold-500/15 text-gold-600'
+										? 'bg-green-500/15 text-green-600'
 										: 'bg-ink-900/5 text-ink-800/60'
 								}`}
 							>
@@ -345,18 +349,7 @@
 			minlength={10}
 			bind:value={password}
 		/>
-		<div class="flex flex-col gap-1.5">
-			<label for="user-role" class="text-sm font-medium text-ink-900">Rôle</label>
-			<select
-				id="user-role"
-				bind:value={role}
-				class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
-			>
-				{#each Object.entries(ROLE_LABELS) as [value, label] (value)}
-					<option {value}>{label}</option>
-				{/each}
-			</select>
-		</div>
+		<SearchSelect id="user-role" label="Rôle" icon={UserGear} options={roleOptions} required bind:value={role} />
 
 		{#if error}
 			<p class="rounded-input bg-ink-900/5 px-3 py-2.5 text-sm text-ink-900" role="alert">{error}</p>
@@ -365,8 +358,9 @@
 		<button
 			type="submit"
 			disabled={saving}
-			class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+			class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 		>
+			<Plus size={16} />
 			Créer le compte
 		</button>
 	</form>
@@ -384,18 +378,7 @@
 				</div>
 			</div>
 			<TextField id="edit-phone" label="Téléphone" icon={Phone} bind:value={editForm.phone} />
-			<div class="flex flex-col gap-1.5">
-				<label for="edit-role" class="text-sm font-medium text-ink-900">Rôle</label>
-				<select
-					id="edit-role"
-					bind:value={editForm.role}
-					class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
-				>
-					{#each Object.entries(ROLE_LABELS) as [value, label] (value)}
-						<option {value}>{label}</option>
-					{/each}
-				</select>
-			</div>
+			<SearchSelect id="edit-role" label="Rôle" icon={UserGear} options={roleOptions} required bind:value={editForm.role} />
 			<SearchSelect
 				id="edit-location"
 				label="Implantation"
@@ -413,8 +396,9 @@
 			<button
 				type="submit"
 				disabled={editSaving}
-				class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
+				<FloppyDisk size={16} />
 				Enregistrer
 			</button>
 		</form>

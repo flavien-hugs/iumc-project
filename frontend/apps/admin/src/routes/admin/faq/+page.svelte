@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Hash, MagnifyingGlass, Plus, Question } from 'phosphor-svelte';
+	import { FloppyDisk, FunnelSimple, Hash, MagnifyingGlass, Plus, Question } from 'phosphor-svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { apiCall, ApiError } from '@iumc/api';
@@ -110,19 +110,9 @@
 	<title>FAQ, panel IUMC</title>
 </svelte:head>
 
-<div class="flex flex-wrap items-center justify-between gap-4">
-	<div>
-		<h1 class="text-3xl font-semibold text-ink-950">Foire aux questions</h1>
-		<p class="mt-2 text-sm text-ink-800/70">Questions affichées sur la page FAQ du site public.</p>
-	</div>
-	<button
-		type="button"
-		onclick={openCreate}
-		class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
-	>
-		<Plus size={16} />
-		Ajouter une question
-	</button>
+<div>
+	<h1 class="text-3xl font-semibold text-ink-950">Foire aux questions</h1>
+	<p class="mt-2 text-sm text-ink-800/70">Questions affichées sur la page FAQ du site public.</p>
 </div>
 
 <Toolbar onRefresh={refresh} {refreshing}>
@@ -134,16 +124,17 @@
 				applyFilters();
 			}}
 		>
-			<div class="w-56">
+			<div class="w-72">
 				<TextField
 					id="q"
 					label="Recherche"
 					icon={MagnifyingGlass}
 					placeholder="Question, réponse…"
 					bind:value={searchText}
+					compact
 				/>
 			</div>
-			<div class="w-44">
+			<div class="w-56">
 				<SearchSelect
 					id="published-filter"
 					label="Statut"
@@ -151,12 +142,14 @@
 					options={publishedOptions}
 					bind:value={publishedValue}
 					onchange={() => applyFilters()}
+					compact
 				/>
 			</div>
 			<button
 				type="submit"
-				class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 			>
+				<FunnelSimple size={16} />
 				Filtrer
 			</button>
 			{#if hasActiveFilters}
@@ -169,6 +162,16 @@
 				</button>
 			{/if}
 		</form>
+	{/snippet}
+	{#snippet primaryAction()}
+		<button
+			type="button"
+			onclick={openCreate}
+			class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
+		>
+			<Plus size={16} />
+			Ajouter une question
+		</button>
 	{/snippet}
 </Toolbar>
 
@@ -204,7 +207,7 @@
 							<button
 								type="button"
 								onclick={(event) => togglePublished(faq, event)}
-								class={`rounded-pill px-3 py-1 text-xs font-medium ${faq.is_published ? 'bg-gold-500/15 text-gold-600 hover:bg-gold-500/25' : 'bg-ink-900/5 text-ink-800/60 hover:bg-ink-900/10'}`}
+								class={`rounded-pill px-3 py-1 text-xs font-medium ${faq.is_published ? 'bg-green-500/15 text-green-600 hover:bg-green-500/25' : 'bg-ink-900/5 text-ink-800/60 hover:bg-ink-900/10'}`}
 							>
 								{faq.is_published ? 'Publiée' : 'Masquée'}
 							</button>
@@ -239,7 +242,7 @@
 					id="faq-order"
 					type="number"
 					bind:value={form.sortOrder}
-					class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2 pr-2 pl-9 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
+					class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2 pr-2 pl-9 text-sm text-ink-950 focus:border-green-500 focus:outline-none"
 				/>
 			</div>
 		</div>
@@ -251,9 +254,15 @@
 		<button
 			type="submit"
 			disabled={saving}
-			class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+			class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 		>
-			{editingId === null ? 'Ajouter' : 'Enregistrer'}
+			{#if editingId === null}
+				<Plus size={16} />
+				Ajouter
+			{:else}
+				<FloppyDisk size={16} />
+				Enregistrer
+			{/if}
 		</button>
 	</form>
 </Drawer>

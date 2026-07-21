@@ -1,10 +1,23 @@
 <script lang="ts">
-	import { Article as ArticleIcon, MagnifyingGlass, Plus, Tag, TextAa, User } from 'phosphor-svelte';
+	import {
+		Article as ArticleIcon,
+		CheckCircle,
+		Eye,
+		FloppyDisk,
+		FunnelSimple,
+		MagnifyingGlass,
+		Plus,
+		Tag,
+		TextAa,
+		Trash,
+		User
+	} from 'phosphor-svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import { apiCall, ApiError } from '@iumc/api';
+	import { apiCall, API_BASE, ApiError } from '@iumc/api';
 	import Drawer from '@iumc/ui/composants/Drawer.svelte';
 	import Pagination from '@iumc/ui/composants/Pagination.svelte';
+	import ConfirmDialog from '@iumc/ui/composants/ConfirmDialog.svelte';
 	import Toolbar from '@iumc/ui/composants/Toolbar.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
 	import SearchSelect from '@iumc/ui/formulaire/SearchSelect.svelte';
@@ -22,6 +35,11 @@
 		published: 'Publié',
 		archived: 'Archivé'
 	};
+
+	const statusFormOptions = Object.entries(STATUS_LABELS).map(([value, label]) => ({
+		value,
+		label
+	}));
 
 	const statusOptions = [
 		{ value: '', label: 'Tous les statuts' },
@@ -126,10 +144,55 @@
 		}
 	}
 
+	let deleteTargetId = $state<number | null>(null);
+	let deleteLoading = $state(false);
+	let deleteError = $state('');
+
+	function requestDelete(id: number, event?: MouseEvent) {
+		event?.stopPropagation();
+		deleteTargetId = id;
+		deleteError = '';
+	}
+
+	async function confirmDelete() {
+		if (deleteTargetId === null) return;
+		deleteLoading = true;
+		deleteError = '';
+		try {
+			await apiCall(`/admin/articles/${deleteTargetId}`, { method: 'DELETE' });
+			deleteTargetId = null;
+			drawerOpen = false;
+			await invalidateAll();
+		} catch (exception) {
+			deleteError = exception instanceof ApiError ? exception.message : 'Suppression impossible.';
+		} finally {
+			deleteLoading = false;
+		}
+	}
+
 	function changePage(nextPage: number) {
 		const params = new URLSearchParams(page.url.searchParams);
 		params.set('page', String(nextPage));
 		goto(`/admin/articles?${params}`, { keepFocus: true });
+	}
+
+	// Insertion d'image dans le contenu (bouton dédié de l'éditeur riche) :
+	// réutilise la médiathèque existante, mêmes contraintes que son propre
+	// formulaire d'upload (JPG/PNG/WebP/SVG, taille max côté API).
+	async function uploadEditorImage(file: File): Promise<{ src: string; alt?: string }> {
+		const form = new FormData();
+		form.append('file', file);
+		const response = await fetch(`${API_BASE}/admin/media`, {
+			method: 'POST',
+			credentials: 'include',
+			body: form
+		});
+		if (!response.ok) {
+			const detail = await response.json().catch(() => ({}));
+			throw new ApiError(response.status, detail.detail ?? 'Téléversement impossible.');
+		}
+		const media: { id: number; name: string } = await response.json();
+		return { src: `${API_BASE}/media/${media.id}/file`, alt: media.name };
 	}
 </script>
 
@@ -137,19 +200,9 @@
 	<title>Articles, panel IUMC</title>
 </svelte:head>
 
-<div class="flex flex-wrap items-center justify-between gap-4">
-	<div>
-		<h1 class="text-3xl font-semibold text-ink-950">Articles</h1>
-		<p class="mt-2 text-sm text-ink-800/70">Actualités et conseils publiés sur le site.</p>
-	</div>
-	<button
-		type="button"
-		onclick={openCreate}
-		class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
-	>
-		<Plus size={16} />
-		Nouvel article
-	</button>
+<div>
+	<h1 class="text-3xl font-semibold text-ink-950">Articles</h1>
+	<p class="mt-2 text-sm text-ink-800/70">Actualités et conseils publiés sur le site.</p>
 </div>
 
 <Toolbar onRefresh={refresh} {refreshing}>
@@ -161,16 +214,17 @@
 				applyFilters();
 			}}
 		>
-			<div class="w-56">
+			<div class="w-72">
 				<TextField
 					id="q"
 					label="Recherche"
 					icon={MagnifyingGlass}
 					placeholder="Titre, résumé…"
 					bind:value={searchText}
+					compact
 				/>
 			</div>
-			<div class="w-44">
+			<div class="w-56">
 				<SearchSelect
 					id="status-filter"
 					label="Statut"
@@ -178,18 +232,20 @@
 					options={statusOptions}
 					bind:value={statusValue}
 					onchange={() => applyFilters()}
+					compact
 				/>
 			</div>
-			<div class="w-48">
+			<div class="w-60">
 				<TextField
 					id="category-filter"
 					label="Catégorie"
 					icon={Tag}
 					placeholder="Conseil foncier…"
 					bind:value={categoryValue}
+					compact
 				/>
 			</div>
-			<div class="w-52">
+			<div class="w-64">
 				<SearchSelect
 					id="author-filter"
 					label="Auteur"
@@ -197,12 +253,14 @@
 					options={authorOptions}
 					bind:value={authorValue}
 					onchange={() => applyFilters()}
+					compact
 				/>
 			</div>
 			<button
 				type="submit"
-				class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 			>
+				<FunnelSimple size={16} />
 				Filtrer
 			</button>
 			{#if hasActiveFilters}
@@ -215,6 +273,16 @@
 				</button>
 			{/if}
 		</form>
+	{/snippet}
+	{#snippet primaryAction()}
+		<button
+			type="button"
+			onclick={openCreate}
+			class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
+		>
+			<Plus size={16} />
+			Nouvel article
+		</button>
 	{/snippet}
 </Toolbar>
 
@@ -236,6 +304,7 @@
 					<th class="px-4 py-3 font-medium">Auteur</th>
 					<th class="px-4 py-3 font-medium">Statut</th>
 					<th class="px-4 py-3 font-medium">Publié le</th>
+					<th class="px-4 py-3 font-medium">Actions</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-ink-900/5">
@@ -249,13 +318,38 @@
 						<td class="px-4 py-3 text-ink-800">{article.author_name ?? '-'}</td>
 						<td class="px-4 py-3">
 							<span
-								class={`rounded-pill px-2.5 py-1 text-xs font-medium ${article.status === 'published' ? 'bg-gold-500/15 text-gold-600' : 'bg-ink-900/5 text-ink-800/70'}`}
+								class={`rounded-pill px-2.5 py-1 text-xs font-medium ${article.status === 'published' ? 'bg-green-500/15 text-green-600' : 'bg-ink-900/5 text-ink-800/70'}`}
 							>
 								{STATUS_LABELS[article.status] ?? article.status}
 							</span>
 						</td>
 						<td class="px-4 py-3 whitespace-nowrap text-ink-800/70">
 							{article.published_at ? formatDate(article.published_at) : '-'}
+						</td>
+						<td class="px-4 py-3">
+							<div class="flex items-center gap-1">
+								<button
+									type="button"
+									title="Voir le détail"
+									aria-label="Voir le détail"
+									onclick={(event) => {
+										event.stopPropagation();
+										openEdit(article);
+									}}
+									class="rounded-input p-1.5 text-ink-800/60 hover:bg-ink-900/5 hover:text-ink-950"
+								>
+									<Eye size={16} />
+								</button>
+								<button
+									type="button"
+									title="Supprimer"
+									aria-label="Supprimer"
+									onclick={(event) => requestDelete(article.id, event)}
+									class="rounded-input p-1.5 text-ink-800/60 hover:bg-ink-900/5 hover:text-ink-950"
+								>
+									<Trash size={16} />
+								</button>
+							</div>
 						</td>
 					</tr>
 				{/each}
@@ -287,32 +381,64 @@
 				placeholder="Conseil foncier, Annonce…"
 				bind:value={form.category}
 			/>
-			<div class="flex flex-col gap-1.5">
-				<label for="statut" class="text-sm font-medium text-ink-900">Statut</label>
-				<select
-					id="statut"
-					bind:value={form.status}
-					class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
-				>
-					{#each Object.entries(STATUS_LABELS) as [value, label] (value)}
-						<option {value}>{label}</option>
-					{/each}
-				</select>
-			</div>
+			<SearchSelect
+				id="statut"
+				label="Statut"
+				icon={CheckCircle}
+				options={statusFormOptions}
+				required
+				bind:value={form.status}
+			/>
 		</div>
 		<RichTextEditor id="resume" label="Résumé" bind:value={form.summary} placeholder="Résumé affiché dans les listes d'articles…" />
-		<RichTextEditor id="contenu" label="Contenu" bind:value={form.body} placeholder="Contenu de l'article…" />
+		<RichTextEditor
+			id="contenu"
+			label="Contenu"
+			bind:value={form.body}
+			placeholder="Contenu de l'article…"
+			onImageUpload={uploadEditorImage}
+		/>
 
 		{#if error}
 			<p class="rounded-input bg-ink-900/5 px-3 py-2.5 text-sm text-ink-900" role="alert">{error}</p>
 		{/if}
 
-		<button
-			type="submit"
-			disabled={saving}
-			class="rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
-		>
-			{editingId === null ? "Créer l'article" : 'Enregistrer'}
-		</button>
+		<div class="mt-2 flex items-center justify-between gap-3">
+			<button
+				type="submit"
+				disabled={saving}
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
+			>
+				{#if editingId === null}
+					<Plus size={16} />
+					Créer l'article
+				{:else}
+					<FloppyDisk size={16} />
+					Enregistrer
+				{/if}
+			</button>
+			{#if editingId !== null}
+				<button
+					type="button"
+					onclick={() => requestDelete(editingId as number)}
+					class="inline-flex items-center gap-2 rounded-pill border border-ink-900/20 px-4 py-2 text-sm font-medium text-ink-800/70 hover:border-ink-900/40"
+				>
+					<Trash size={14} />
+					Supprimer
+				</button>
+			{/if}
+		</div>
 	</form>
 </Drawer>
+
+<ConfirmDialog
+	open={deleteTargetId !== null}
+	title="Supprimer cet article ?"
+	description="Cette action est définitive et retire l'article du site public."
+	confirmLabel="Supprimer"
+	destructive
+	loading={deleteLoading}
+	error={deleteError}
+	onconfirm={confirmDelete}
+	oncancel={() => (deleteTargetId = null)}
+/>

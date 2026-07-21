@@ -2,12 +2,13 @@
 
 import datetime as dt
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import selectinload
 
 from app.core.db import DbSession
+from app.core.pagination import Page, PageParams, paginate
 from app.models import (
     Article,
     ArticleStatus,
@@ -99,30 +100,54 @@ async def list_public_divisions(db: DbSession) -> list[PublicDivision]:
     ]
 
 
-@router.get("/articles", response_model=list[PublicArticleSummary])
-async def list_public_articles(db: DbSession, limit: int = 24) -> list[PublicArticleSummary]:
-    articles = (
-        (
-            await db.execute(
-                select(Article)
-                .where(Article.status == ArticleStatus.published)
-                .order_by(Article.published_at.desc())
-                .limit(min(limit, 50))
+@router.get("/articles", response_model=Page[PublicArticleSummary])
+async def list_public_articles(
+    db: DbSession,
+    q: str | None = None,
+    category: str | None = None,
+    params: PageParams = Depends(),
+) -> Page[PublicArticleSummary]:
+    query = select(Article).where(Article.status == ArticleStatus.published)
+    if category:
+        query = query.where(Article.category == category)
+    if q:
+        pattern = f"%{q.strip()}%"
+        query = query.where(or_(Article.title.ilike(pattern), Article.summary.ilike(pattern)))
+    query = query.order_by(Article.published_at.desc())
+    rows, total = await paginate(db, query, params)
+    return Page(
+        items=[
+            PublicArticleSummary(
+                slug=article.slug,
+                title=article.title,
+                category=article.category,
+                summary=article.summary,
+                published_at=article.published_at,
             )
-        )
-        .scalars()
-        .all()
+            for (article,) in rows
+        ],
+        total=total,
+        page=params.page,
+        page_size=params.page_size,
     )
-    return [
-        PublicArticleSummary(
-            slug=article.slug,
-            title=article.title,
-            category=article.category,
-            summary=article.summary,
-            published_at=article.published_at,
+
+
+@router.get("/article-categories", response_model=list[str])
+async def list_public_article_categories(db: DbSession) -> list[str]:
+    """Catégories distinctes des articles publiés (filtres de la page Actualités)."""
+    rows = (
+        await db.execute(
+            select(Article.category)
+            .where(
+                Article.status == ArticleStatus.published,
+                Article.category.is_not(None),
+                Article.category != "",
+            )
+            .distinct()
+            .order_by(Article.category)
         )
-        for article in articles
-    ]
+    ).scalars()
+    return list(rows)
 
 
 @router.get("/articles/{slug}", response_model=PublicArticleDetail)

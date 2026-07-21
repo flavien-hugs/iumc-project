@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Clock, EnvelopeSimple, MapPin, NotePencil, Phone, Tag, User, WhatsappLogo } from 'phosphor-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
 	import TextareaField from '@iumc/ui/formulaire/TextareaField.svelte';
 	import GoldWeightMotif from '$lib/illustrations/GoldWeightMotif.svelte';
@@ -39,13 +40,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Contact, IUMC</title>
-	<meta
-		name="description"
-		content="Contactez IUMC par téléphone, e-mail, WhatsApp ou via le formulaire de contact."
-	/>
-</svelte:head>
+<Seo
+	title="Contact, IUMC"
+	description="Contactez IUMC par téléphone, e-mail, WhatsApp ou via le formulaire de contact."
+/>
 
 <section class="relative mx-auto grid max-w-7xl gap-16 overflow-hidden px-6 py-16 md:grid-cols-2 lg:px-10">
 	<GoldWeightMotif
@@ -96,7 +94,7 @@
 			href="https://wa.me/225XXXXXXXXXX"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="mt-8 inline-flex items-center gap-2 rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98]"
+			class="mt-8 inline-flex items-center gap-2 rounded-pill bg-green-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98]"
 		>
 			<WhatsappLogo size={18} weight="fill" />
 			Échanger sur WhatsApp
@@ -154,7 +152,7 @@
 						type="checkbox"
 						required
 						bind:checked={consent}
-						class="mt-0.5 accent-gold-500"
+						class="mt-0.5 accent-green-500"
 					/>
 					J'accepte que mes informations soient utilisées par IUMC pour traiter ma demande,
 					conformément à la politique de confidentialité.
@@ -163,7 +161,7 @@
 				<button
 					type="submit"
 					disabled={formState === 'sending'}
-					class="rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98] disabled:opacity-60"
+					class="rounded-pill bg-green-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98] disabled:opacity-60"
 				>
 					{formState === 'sending' ? 'Envoi en cours…' : 'Envoyer le message'}
 				</button>

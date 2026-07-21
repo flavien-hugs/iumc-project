@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { CalendarBlank, CaretLeft, ChatText, Clock, DownloadSimple, NotePencil } from 'phosphor-svelte';
+	import {
+		CalendarBlank,
+		CaretLeft,
+		ChatText,
+		Clock,
+		DownloadSimple,
+		FloppyDisk,
+		NotePencil
+	} from 'phosphor-svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { apiCall, API_BASE, ApiError } from '@iumc/api';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
@@ -164,7 +172,7 @@
 				<ol class="mt-4 space-y-4">
 					{#each request.history as entry (entry.id)}
 						<li class="flex gap-3 text-sm">
-							<span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold-500"></span>
+							<span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
 							<div>
 								<p class="text-ink-950">
 									<span class="font-medium">
@@ -199,7 +207,7 @@
 					<select
 						id="statut"
 						bind:value={newStatus}
-						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
+						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-green-500 focus:outline-none"
 					>
 						<option value="">Conserver le statut actuel</option>
 						{#each Object.entries(REQUEST_STATUS_LABELS) as [value, label] (value)}
@@ -213,7 +221,7 @@
 					<select
 						id="agent"
 						bind:value={newAgentId}
-						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
+						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-green-500 focus:outline-none"
 					>
 						<option value="">Conserver l'affectation</option>
 						{#each activeUsers as user (user.id)}
@@ -227,8 +235,9 @@
 				<button
 					type="submit"
 					disabled={saving}
-					class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+					class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 				>
+					<FloppyDisk size={16} />
 					Enregistrer
 				</button>
 			</form>
@@ -275,8 +284,9 @@
 				<button
 					type="submit"
 					disabled={saving}
-					class="rounded-pill border border-ink-900/20 px-5 py-2 text-sm font-medium text-ink-900 hover:border-ink-900/40 disabled:opacity-60"
+					class="inline-flex items-center gap-2 rounded-pill border border-ink-900/20 px-5 py-2 text-sm font-medium text-ink-900 hover:border-ink-900/40 disabled:opacity-60"
 				>
+					<CalendarBlank size={16} />
 					Planifier un rendez-vous
 				</button>
 			</form>

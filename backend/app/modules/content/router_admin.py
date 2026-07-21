@@ -1,3 +1,7 @@
+import datetime as dt
+import re
+import unicodedata
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import or_, select
@@ -18,11 +22,30 @@ router = APIRouter(
 )
 
 
+def _slugify(text: str) -> str:
+    ascii_text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text).strip("-").lower()
+    return slug or "item"
+
+
+async def _unique_slug(db: DbSession, model: type, title: str) -> str:
+    base = _slugify(title)
+    slug = base
+    suffix = 2
+    while (
+        await db.execute(select(model.id).where(model.slug == slug))
+    ).scalar_one_or_none() is not None:
+        slug = f"{base}-{suffix}"
+        suffix += 1
+    return slug
+
+
 class ServiceRow(BaseModel):
     id: int
     title: str
     slug: str
     status: str
+    deleted_at: dt.datetime | None
 
 
 class DivisionRow(BaseModel):
@@ -38,8 +61,14 @@ class DivisionUpdate(BaseModel):
     status: DivisionStatus
 
 
+class ServiceCreate(BaseModel):
+    division_id: int
+    title: str
+
+
 class ServiceUpdate(BaseModel):
-    status: ServiceStatus
+    title: str | None = None
+    status: ServiceStatus | None = None
 
 
 @router.get("/divisions", response_model=list[DivisionRow])
@@ -65,7 +94,7 @@ async def list_divisions(db: DbSession) -> list[DivisionRow]:
             services=[
                 ServiceRow(
                     id=service.id, title=service.title, slug=service.slug,
-                    status=service.status.value,
+                    status=service.status.value, deleted_at=service.deleted_at,
                 )
                 for service in sorted(division.services, key=lambda item: item.title)
             ],
@@ -89,18 +118,73 @@ async def update_division(
     await db.commit()
 
 
+@router.post("/services", response_model=ServiceRow, status_code=status.HTTP_201_CREATED)
+async def create_service(payload: ServiceCreate, db: DbSession, user: CurrentUser) -> ServiceRow:
+    title = payload.title.strip()
+    if not title:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Le titre est requis")
+    division = await db.get(Division, payload.division_id)
+    if division is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Pôle introuvable")
+    service = Service(
+        division_id=division.id, title=title, slug=await _unique_slug(db, Service, title),
+    )
+    db.add(service)
+    await db.flush()
+    log_action(db, user.id, "create", resource="service", resource_id=service.id)
+    await db.commit()
+    return ServiceRow(
+        id=service.id, title=service.title, slug=service.slug,
+        status=service.status.value, deleted_at=service.deleted_at,
+    )
+
+
 @router.patch("/services/{service_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_service(
     service_id: int, payload: ServiceUpdate, db: DbSession, user: CurrentUser
 ) -> None:
     service = await db.get(Service, service_id)
-    if service is None:
+    if service is None or service.deleted_at is not None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Service introuvable")
-    service.status = payload.status
-    log_action(
-        db, user.id, "status_change", resource="service", resource_id=service.id,
-        details={"status": payload.status.value},
-    )
+    details: dict[str, str] = {}
+    if payload.title is not None:
+        title = payload.title.strip()
+        if not title:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Le titre est requis")
+        service.title = title
+        details["title"] = title
+    if payload.status is not None:
+        service.status = payload.status
+        details["status"] = payload.status.value
+    if details:
+        log_action(
+            db, user.id, "update", resource="service", resource_id=service.id, details=details,
+        )
+        await db.commit()
+
+
+@router.delete("/services/{service_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_service(service_id: int, db: DbSession, user: CurrentUser) -> None:
+    """Suppression logique : `service.service_id` est référencé en `RESTRICT`
+    par les demandes déjà soumises (historique), un hard delete casserait ces
+    lignes. Le service est aussi désactivé pour disparaître immédiatement du
+    site public, sans attendre une éventuelle restauration."""
+    service = await db.get(Service, service_id)
+    if service is None or service.deleted_at is not None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Service introuvable")
+    service.deleted_at = dt.datetime.now(dt.UTC)
+    service.status = ServiceStatus.inactive
+    log_action(db, user.id, "delete", resource="service", resource_id=service.id)
+    await db.commit()
+
+
+@router.post("/services/{service_id}/restore", status_code=status.HTTP_204_NO_CONTENT)
+async def restore_service(service_id: int, db: DbSession, user: CurrentUser) -> None:
+    service = await db.get(Service, service_id)
+    if service is None or service.deleted_at is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Service supprimé introuvable")
+    service.deleted_at = None
+    log_action(db, user.id, "restore", resource="service", resource_id=service.id)
     await db.commit()
 
 
@@ -108,17 +192,7 @@ async def update_service(
 # Articles (PRD section 10.6 / CDC section 8.8)
 # ---------------------------------------------------------------------------
 
-import datetime as dt
-import re
-import unicodedata
-
 from app.models import Article, ArticleStatus
-
-
-def _slugify(text: str) -> str:
-    ascii_text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
-    slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text).strip("-").lower()
-    return slug or "article"
 
 
 class ArticleRow(BaseModel):
@@ -167,18 +241,6 @@ def _article_row(article: Article, author_name: str | None = None) -> ArticleRow
     )
 
 
-async def _unique_slug(db, title: str) -> str:
-    base = _slugify(title)
-    slug = base
-    suffix = 2
-    while (
-        await db.execute(select(Article.id).where(Article.slug == slug))
-    ).scalar_one_or_none() is not None:
-        slug = f"{base}-{suffix}"
-        suffix += 1
-    return slug
-
-
 @router.get("/articles", response_model=Page[ArticleRow])
 async def list_articles(
     db: DbSession,
@@ -212,7 +274,7 @@ async def list_articles(
 async def create_article(payload: ArticleCreate, db: DbSession, user: CurrentUser) -> ArticleRow:
     article = Article(
         title=payload.title,
-        slug=await _unique_slug(db, payload.title),
+        slug=await _unique_slug(db, Article, payload.title),
         category=payload.category,
         summary=sanitize_html(payload.summary),
         body=sanitize_html(payload.body),
@@ -253,6 +315,16 @@ async def update_article(
     # un UPDATE plante en async (MissingGreenlet).
     await db.refresh(article)
     return _article_row(article)
+
+
+@router.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_article(article_id: int, db: DbSession, user: CurrentUser) -> None:
+    article = await db.get(Article, article_id)
+    if article is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Article introuvable")
+    log_action(db, user.id, "delete", resource="article", resource_id=article_id)
+    await db.delete(article)
+    await db.commit()
 
 
 # ---------------------------------------------------------------------------

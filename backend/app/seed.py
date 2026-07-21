@@ -17,17 +17,24 @@ FULL_DESCRIPTIONS = {
     "juridique": (
         "Le pôle juridique accompagne les particuliers, entreprises et investisseurs "
         "dans la rédaction, l'analyse et le suivi de leurs engagements contractuels, "
-        "ainsi que dans la prévention et la gestion des litiges fonciers."
+        "ainsi que dans la prévention et la gestion des litiges fonciers. Il s'adresse "
+        "aux sociétés disposant d'un réseau d'agences ou de succursales, aux entreprises "
+        "commerciales, aux professions libérales, aux investisseurs privés locaux et "
+        "étrangers, aux communautés villageoises, ainsi qu'aux industriels en phase "
+        "d'exploration ou d'exploitation."
     ),
     "foncier-immobilier": (
         "Le pôle foncier et immobilier accompagne particuliers, promoteurs et industriels "
         "dans la vérification, la régularisation et le déblocage de leurs dossiers fonciers "
-        "et immobiliers, urbains comme industriels."
+        "et immobiliers, urbains comme industriels. Il s'adresse aux particuliers et aux "
+        "communautés villageoises pour les dossiers d'ACD ou de CMPF, aux promoteurs "
+        "immobiliers, aux professionnels du secteur — notaires, juristes immobiliers, "
+        "géomètres — et aux industriels en quête de terrains à usage industriel."
     ),
     "agropastoral": (
-        "Le pôle agropastoral est en cours de développement. Il couvrira à terme les "
-        "activités agricoles, l'élevage, le transport de marchandises et le commerce "
-        "d'aliments pour bovins."
+        "Le pôle agropastoral est en cours d'achèvement. Il couvrira les activités "
+        "agricoles, les activités d'élevage, ainsi que, à titre accessoire, le transport "
+        "de marchandises et le commerce d'aliments pour bovins."
     ),
 }
 

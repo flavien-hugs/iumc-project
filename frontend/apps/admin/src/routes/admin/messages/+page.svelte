@@ -56,7 +56,7 @@
 						class={`rounded-pill px-3 py-1 text-xs font-medium ${
 							item.is_processed
 								? 'bg-ink-900/5 text-ink-800/60 hover:bg-ink-900/10'
-								: 'bg-gold-500 text-ink-950 hover:bg-gold-600'
+								: 'bg-green-500 text-ink-950 hover:bg-green-600'
 						}`}
 					>
 						{item.is_processed ? 'Traité' : 'Marquer traité'}

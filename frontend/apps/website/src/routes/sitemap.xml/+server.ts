@@ -1,5 +1,5 @@
 import { serverApiGet } from '@iumc/api/server';
-import type { PublicArticleSummary, PublicDivision } from '$lib/content';
+import type { PublicArticleSummary, PublicDivision, PublicPage } from '$lib/content';
 import type { RequestHandler } from './$types';
 
 // URLs statiques du site public (PRD section 16). Les pages du panel et les
@@ -23,10 +23,11 @@ function urlEntry(origin: string, path: string): string {
 export const GET: RequestHandler = async ({ url, fetch }) => {
 	const origin = url.origin;
 
-	const [divisions, articles] = await Promise.all([
+	const [divisions, articlesPage] = await Promise.all([
 		serverApiGet<PublicDivision[]>('/divisions', fetch),
-		serverApiGet<PublicArticleSummary[]>('/articles?limit=50', fetch)
+		serverApiGet<PublicPage<PublicArticleSummary>>('/articles?page_size=100', fetch)
 	]);
+	const articles = articlesPage.items;
 
 	const entries = [
 		...STATIC_PATHS.map((path) => urlEntry(origin, path)),

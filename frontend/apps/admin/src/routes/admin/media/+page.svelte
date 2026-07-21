@@ -94,7 +94,7 @@
 			error = '';
 			drawerOpen = true;
 		}}
-		class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+		class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 	>
 		<Plus size={16} />
 		Ajouter un média
@@ -179,7 +179,7 @@
 		<button
 			type="submit"
 			disabled={uploading || !files?.length}
-			class="inline-flex items-center justify-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+			class="inline-flex items-center justify-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 		>
 			<UploadSimple size={16} />
 			{uploading ? 'Téléversement…' : 'Téléverser'}

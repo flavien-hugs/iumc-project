@@ -13,6 +13,7 @@
 		placeholder = 'Rechercher…',
 		required = false,
 		disabled = false,
+		compact = false,
 		onchange
 	}: {
 		id: string;
@@ -23,6 +24,8 @@
 		placeholder?: string;
 		required?: boolean;
 		disabled?: boolean;
+		/** Sans label visible (tooltip au survol à la place) — barres d'outils/filtres compacts. */
+		compact?: boolean;
 		onchange?: (value: string) => void;
 	} = $props();
 
@@ -96,8 +99,10 @@
 	}
 </script>
 
-<div class="flex flex-col gap-2">
-	<label for={id} class="text-sm font-medium text-ink-900">{label}</label>
+<div class={compact ? 'group relative' : 'flex flex-col gap-2'}>
+	{#if !compact}
+		<label for={id} class="text-sm font-medium text-ink-900">{label}</label>
+	{/if}
 	<div class="relative">
 		<Icon size={18} class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-800/40" />
 		<input
@@ -108,6 +113,7 @@
 			aria-expanded={open}
 			aria-controls={listboxId}
 			aria-autocomplete="list"
+			aria-label={compact ? label : undefined}
 			autocomplete="off"
 			{disabled}
 			placeholder={disabled ? '' : placeholder}
@@ -116,7 +122,7 @@
 			onfocus={() => (open = true)}
 			onkeydown={onKeydown}
 			onblur={onBlur}
-			class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pr-9 pl-10 text-sm text-ink-950 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none disabled:opacity-50"
+			class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pr-9 pl-10 text-sm text-ink-950 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none disabled:opacity-50"
 		/>
 		<CaretDown
 			size={16}
@@ -146,4 +152,11 @@
 			</ul>
 		{/if}
 	</div>
+	{#if compact}
+		<span
+			class="pointer-events-none absolute bottom-full left-0 z-20 mb-2 whitespace-nowrap rounded-input bg-ink-950 px-2.5 py-1.5 text-xs font-medium text-paper-50 opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+		>
+			{label}
+		</span>
+	{/if}
 </div>

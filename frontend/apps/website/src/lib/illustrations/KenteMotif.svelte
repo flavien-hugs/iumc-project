@@ -15,7 +15,7 @@
 <svg class={className} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 	<defs>
 		<pattern id={patternId} width="80" height="80" patternUnits="userSpaceOnUse">
-			<g fill="var(--color-gold-500)">
+			<g fill="var(--color-green-500)">
 				<rect x="3" y="4" width="4" height="32" />
 				<rect x="11" y="4" width="4" height="32" />
 				<rect x="19" y="4" width="4" height="32" />
@@ -27,7 +27,7 @@
 
 			<path d="M20,46 L34,60 L20,74 L6,60 Z" fill="none" stroke="currentColor" stroke-width="2" />
 			<circle cx="20" cy="60" r="2" fill="currentColor" />
-			<g fill="var(--color-gold-500)">
+			<g fill="var(--color-green-500)">
 				<rect x="43" y="44" width="4" height="32" />
 				<rect x="51" y="44" width="4" height="32" />
 				<rect x="59" y="44" width="4" height="32" />

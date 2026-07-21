@@ -1,19 +1,17 @@
 <script lang="ts">
 	import { CaretDown } from 'phosphor-svelte';
+	import Seo from '$lib/components/Seo.svelte';
+	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import { reveal } from '$lib/actions/reveal';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
-	import { reveal } from '$lib/actions/reveal';
 </script>
 
-<svelte:head>
-	<title>Foire aux questions, IUMC</title>
-	<meta
-		name="description"
-		content="Réponses aux questions courantes sur les services, les demandes et les rendez-vous chez IUMC."
-	/>
-</svelte:head>
+<Seo
+	title="Foire aux questions, IUMC"
+	description="Réponses aux questions courantes sur les services, les demandes et les rendez-vous chez IUMC."
+/>
 
 <section class="mx-auto max-w-3xl px-6 pt-16 pb-20 lg:px-10">
 	<div use:reveal>
