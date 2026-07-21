@@ -3,7 +3,9 @@
 	import StarterKit from '@tiptap/starter-kit';
 	import Link from '@tiptap/extension-link';
 	import Placeholder from '@tiptap/extension-placeholder';
+	import TiptapImage from '@tiptap/extension-image';
 	import {
+		Image as ImageIcon,
 		LinkSimple,
 		ListBullets,
 		ListNumbers,
@@ -17,17 +19,25 @@
 		id,
 		label,
 		value = $bindable(''),
-		placeholder = ''
+		placeholder = '',
+		onImageUpload
 	}: {
 		id: string;
 		label: string;
 		value?: string;
 		placeholder?: string;
+		/** Fournir un gestionnaire d'upload active le bouton "insérer une image"
+		 * (désactivé par défaut — n'a de sens que là où c'est demandé, ex. le
+		 * corps d'un article, pas une réponse de FAQ). */
+		onImageUpload?: (file: File) => Promise<{ src: string; alt?: string }>;
 	} = $props();
 
 	let containerEl: HTMLDivElement | undefined = $state();
 	let editor: Editor | undefined = $state();
 	let focused = $state(false);
+	let imageInputEl: HTMLInputElement | undefined = $state();
+	let uploadingImage = $state(false);
+	let imageError = $state('');
 
 	// États des boutons de la barre d'outils, recalculés à chaque changement
 	// de sélection ou de contenu (évènement "transaction" de Tiptap).
@@ -52,7 +62,8 @@
 			extensions: [
 				StarterKit.configure({ heading: { levels: [2, 3] } }),
 				Link.configure({ openOnClick: false, autolink: true }),
-				Placeholder.configure({ placeholder })
+				Placeholder.configure({ placeholder }),
+				...(onImageUpload ? [TiptapImage.configure({ inline: false })] : [])
 			],
 			content: value,
 			onUpdate: ({ editor: instanceUpdate }) => {
@@ -89,12 +100,33 @@
 		const url = window.prompt('Adresse du lien (https://…)');
 		if (url) editor.chain().focus().setLink({ href: url }).run();
 	}
+
+	function triggerImagePicker() {
+		imageInputEl?.click();
+	}
+
+	async function handleImageSelected(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+		input.value = '';
+		if (!file || !onImageUpload || !editor) return;
+		uploadingImage = true;
+		imageError = '';
+		try {
+			const { src, alt } = await onImageUpload(file);
+			editor.chain().focus().setImage({ src, alt: alt ?? '' }).run();
+		} catch (exception) {
+			imageError = exception instanceof Error ? exception.message : 'Téléversement impossible.';
+		} finally {
+			uploadingImage = false;
+		}
+	}
 </script>
 
 <div class="flex flex-col gap-2">
 	<span class="text-sm font-medium text-ink-900">{label}</span>
 	<div
-		class={`rounded-input border bg-paper-50 transition-colors ${focused ? 'border-gold-500 ring-1 ring-gold-500' : 'border-ink-900/20'}`}
+		class={`rounded-input border bg-paper-50 transition-colors ${focused ? 'border-green-500 ring-1 ring-green-500' : 'border-ink-900/20'}`}
 	>
 		<div class="flex flex-wrap items-center gap-0.5 border-b border-ink-900/10 p-1.5">
 			<button
@@ -163,6 +195,25 @@
 			>
 				<LinkSimple size={16} />
 			</button>
+			{#if onImageUpload}
+				<span class="mx-1 h-5 w-px bg-ink-900/10"></span>
+				<input
+					bind:this={imageInputEl}
+					type="file"
+					accept="image/jpeg,image/png,image/webp,image/svg+xml"
+					class="hidden"
+					onchange={handleImageSelected}
+				/>
+				<button
+					type="button"
+					aria-label="Insérer une image"
+					onclick={triggerImagePicker}
+					disabled={uploadingImage}
+					class="rounded-input p-1.5 text-ink-800/70 hover:bg-ink-900/5 disabled:opacity-50"
+				>
+					<ImageIcon size={16} />
+				</button>
+			{/if}
 		</div>
 		<div
 			bind:this={containerEl}
@@ -170,6 +221,9 @@
 			class="iumc-rich-text editor-content px-3 py-2.5 text-sm text-ink-950"
 		></div>
 	</div>
+	{#if imageError}
+		<p class="text-xs text-ink-900" role="alert">{imageError}</p>
+	{/if}
 </div>
 
 <style>
@@ -183,5 +237,10 @@
 		color: color-mix(in srgb, var(--color-ink-800) 40%, transparent);
 		content: attr(data-placeholder);
 		pointer-events: none;
+	}
+	.editor-content :global(.tiptap img) {
+		max-width: 100%;
+		border-radius: var(--radius-input);
+		margin: 0.5em 0;
 	}
 </style>

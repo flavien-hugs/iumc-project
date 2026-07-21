@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowRight, WhatsappLogo } from 'phosphor-svelte';
 	import { divisionIcon } from '$lib/content';
+	import Seo from '$lib/components/Seo.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -31,10 +32,7 @@
 
 </script>
 
-<svelte:head>
-	<title>{service.title}, IUMC</title>
-	<meta name="description" content={service.summary ?? service.title} />
-</svelte:head>
+<Seo title={`${service.title}, IUMC`} description={service.summary ?? service.title} />
 
 <section class="relative mx-auto max-w-4xl overflow-hidden px-6 pt-16 pb-8 lg:px-10">
 	<Icon class="pointer-events-none absolute top-8 -right-8 hidden h-56 w-56 text-ink-900/5 sm:block" />
@@ -52,10 +50,10 @@
 		<p class="mt-3 max-w-[60ch] text-sm text-ink-800/70">{service.description}</p>
 	{/if}
 
-	<div class="mt-8 flex flex-wrap items-center gap-4">
+	<div class="mt-8 flex flex-nowrap items-center gap-3 overflow-x-auto pb-1 sm:gap-4">
 		<a
 			href={`/fr/demande?division=${division.slug}&service=${service.slug}`}
-			class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98]"
+			class="inline-flex shrink-0 items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98] sm:px-6 sm:py-3"
 		>
 			Demander un accompagnement
 			<ArrowRight size={16} />
@@ -64,7 +62,7 @@
 			href="https://wa.me/225XXXXXXXXXX"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="inline-flex items-center gap-2 rounded-pill border border-ink-900/20 px-6 py-3 text-sm font-medium text-ink-900 hover:border-ink-900/40"
+			class="inline-flex shrink-0 items-center gap-2 rounded-pill border border-ink-900/20 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-ink-900 hover:border-ink-900/40 sm:px-6 sm:py-3"
 		>
 			<WhatsappLogo size={18} weight="fill" />
 			Échanger sur WhatsApp

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { ArrowRight, Buildings, Calendar, MapPin } from 'phosphor-svelte';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
-	import GoldWeightMotif from '$lib/illustrations/GoldWeightMotif.svelte';
-	import KenteMotif from '$lib/illustrations/KenteMotif.svelte';
+	import Seo from '$lib/components/Seo.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
+	import GoldWeightMotif from '@iumc/ui/illustrations/GoldWeightMotif.svelte';
+	import KenteMotif from '@iumc/ui/illustrations/KenteMotif.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import type { PageProps } from './$types';
 
@@ -26,20 +27,17 @@
 	]);
 </script>
 
-<svelte:head>
-	<title>Qui sommes-nous, IUMC</title>
-	<meta
-		name="description"
-		content="IUMC, entreprise ivoirienne créée en 2026 : histoire, vision, missions et valeurs."
-	/>
-</svelte:head>
+<Seo
+	title="Qui sommes-nous, IUMC"
+	description="IUMC, entreprise ivoirienne créée en 2026 : histoire, vision, missions et valeurs."
+/>
 
 <section class="mx-auto max-w-3xl px-6 pt-16 pb-10 lg:px-10" use:reveal>
 	<h1 class="text-4xl font-semibold text-ink-950 md:text-5xl">Qui sommes-nous ?</h1>
 	<p class="mt-5 max-w-[60ch] text-lg text-ink-800/80">
 		Ivoire Univers Multiservices et Commerces accompagne particuliers, entreprises et
 		investisseurs dans leurs démarches juridiques, foncières, immobilières et, à terme,
-		agropastorales, depuis son <span class="font-bold text-gold-600">siège de Bouaké</span>.
+		agropastorales, depuis son <span class="font-bold text-green-600">siège de Bouaké</span>.
 	</p>
 </section>
 
@@ -68,7 +66,7 @@
 		class="parallax-lent pointer-events-none absolute top-1/2 right-0 h-105 w-105 translate-x-1/3 -translate-y-1/2 text-paper-50/5"
 	/>
 	<div class="relative mx-auto max-w-3xl px-6 py-16 lg:px-10" use:reveal>
-		<p class="text-xs font-medium tracking-wide text-gold-500/80 uppercase">
+		<p class="text-xs font-medium tracking-wide text-green-500/80 uppercase">
 			Vision à l'horizon 2030
 		</p>
 		<div class="iumc-rich-text vision-content mt-4 font-display text-2xl leading-snug text-paper-50 italic md:text-3xl">
@@ -86,7 +84,7 @@
 	<ul class="mt-6 divide-y divide-ink-900/10 border-t border-ink-900/10">
 		{#each about.missions as mission, i (mission)}
 			<li use:reveal={{ delay: i * 60 }} class="flex gap-3 py-3 text-sm text-ink-800">
-				<span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gold-500"></span>
+				<span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-green-500"></span>
 				{mission}
 			</li>
 		{/each}
@@ -115,8 +113,9 @@
 <section class="mx-auto max-w-3xl px-6 py-16 lg:px-10">
 	<h2 class="text-2xl font-semibold text-ink-950">L'originalité du modèle IUMC</h2>
 	<p class="mt-3 max-w-[60ch] text-sm text-ink-800/70">
-		IUMC se positionne comme un prestataire pluridisciplinaire, capable de proposer des offres
-		intégrées et personnalisées.
+		Prestataire pluridisciplinaire de l'ingénierie immobilière, IUMC se veut un acteur clé et
+		un relais fiable des services de l'État — à travers des packages de services sur mesure et
+		un modèle de gestion intégrée.
 	</p>
 	<dl class="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2">
 		{#each about.differentiators as item, i (item.title)}
@@ -145,7 +144,7 @@
 	<div class="grid gap-8 border-t border-ink-900/10 pt-10 sm:grid-cols-4">
 		{#each keyFigures as figure, i (figure.label)}
 			<div use:reveal={{ delay: i * 90 }} class="text-center sm:text-left">
-				<p class="font-display text-4xl font-bold text-gold-600">{figure.value}</p>
+				<p class="font-display text-4xl font-bold text-green-600">{figure.value}</p>
 				<p class="mt-1 text-sm text-ink-800/60">{figure.label}</p>
 			</div>
 		{/each}
@@ -166,23 +165,23 @@
 	>
 		<div>
 			<h2 class="max-w-[24ch] text-3xl font-semibold text-paper-50">
-				Envie d'échanger avec <span class="font-bold text-gold-500">IUMC</span> ?
+				Envie d'échanger avec <span class="font-bold text-green-500">IUMC</span> ?
 			</h2>
 			<p class="mt-3 max-w-[48ch] text-paper-100/70">
 				Découvrez nos pôles d'activité ou décrivez directement votre besoin.
 			</p>
 		</div>
-		<div class="flex flex-wrap items-center gap-4">
+		<div class="flex flex-nowrap items-center gap-3 overflow-x-auto pb-1 sm:gap-4">
 			<a
 				href="/fr/demande"
-				class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98]"
+				class="inline-flex shrink-0 items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98] sm:px-6 sm:py-3"
 			>
 				Demander un accompagnement
 				<ArrowRight size={16} />
 			</a>
 			<a
 				href="/fr/services"
-				class="inline-flex items-center gap-2 rounded-pill border border-paper-100/25 px-6 py-3 text-sm font-medium text-paper-50 hover:border-paper-100/50"
+				class="inline-flex shrink-0 items-center gap-2 rounded-pill border border-paper-100/25 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-paper-50 hover:border-paper-100/50 sm:px-6 sm:py-3"
 			>
 				Découvrir nos pôles
 			</a>
@@ -195,7 +194,7 @@
 	   or de la plateforme plutôt qu'un simple gras blanc, et sort de l'italique
 	   ambiant pour rester lisible. */
 	.vision-content :global(strong) {
-		color: var(--color-gold-500);
+		color: var(--color-green-500);
 		font-style: normal;
 	}
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CalendarBlank } from 'phosphor-svelte';
+	import { CalendarBlank, FunnelSimple } from 'phosphor-svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import Pagination from '@iumc/ui/composants/Pagination.svelte';
@@ -79,12 +79,17 @@
 				applyFilters();
 			}}
 		>
-			<TextField id="date-from" label="Depuis le" type="date" icon={CalendarBlank} bind:value={dateFrom} />
-			<TextField id="date-to" label="Jusqu'au" type="date" icon={CalendarBlank} bind:value={dateTo} />
+			<div class="w-48">
+				<TextField id="date-from" label="Depuis le" type="date" icon={CalendarBlank} bind:value={dateFrom} compact />
+			</div>
+			<div class="w-48">
+				<TextField id="date-to" label="Jusqu'au" type="date" icon={CalendarBlank} bind:value={dateTo} compact />
+			</div>
 			<button
 				type="submit"
-				class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 			>
+				<FunnelSimple size={16} />
 				Filtrer
 			</button>
 			{#if dateFrom || dateTo}

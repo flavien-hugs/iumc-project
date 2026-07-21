@@ -17,7 +17,8 @@
 	import { page } from '$app/state';
 	import { apiCall, API_BASE, ApiError } from '@iumc/api';
 	import type { PublicDivision } from '$lib/content';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import Seo from '$lib/components/Seo.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import TextField from '@iumc/ui/formulaire/TextField.svelte';
 	import TextareaField from '@iumc/ui/formulaire/TextareaField.svelte';
 	import SearchSelect from '@iumc/ui/formulaire/SearchSelect.svelte';
@@ -118,13 +119,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Demander un accompagnement, IUMC</title>
-	<meta
-		name="description"
-		content="Décrivez votre besoin à IUMC : un conseiller vous recontacte pour votre demande d'accompagnement juridique, foncier, immobilier ou industriel."
-	/>
-</svelte:head>
+<Seo
+	title="Demander un accompagnement, IUMC"
+	description="Décrivez votre besoin à IUMC : un conseiller vous recontacte pour votre demande d'accompagnement juridique, foncier, immobilier ou industriel."
+/>
 
 <section class="mx-auto max-w-2xl px-6 py-16 lg:px-10">
 	<h1 class="text-4xl font-semibold text-ink-950 md:text-5xl">Demander un accompagnement</h1>
@@ -139,7 +137,7 @@
 			<h2 class="text-xl font-semibold text-ink-950">Demande envoyée</h2>
 			<p class="mt-2 text-sm text-ink-800/70">
 				Merci, votre demande a bien été transmise à IUMC sous la référence
-				<span class="font-bold text-gold-600">{reference}</span>. Conservez-la pour vos
+				<span class="font-bold text-green-600">{reference}</span>. Conservez-la pour vos
 				échanges : un conseiller vous recontacte selon votre préférence de contact.
 			</p>
 		</div>
@@ -236,7 +234,7 @@
 								name="preference-contact"
 								value={option.value}
 								bind:group={contactPreference}
-								class="accent-gold-500"
+								class="accent-green-500"
 							/>
 							<option.icon size={16} class="text-ink-800/50" />
 							{option.label}
@@ -264,7 +262,7 @@
 			</div>
 
 			<label class="flex items-start gap-2.5 text-xs text-ink-800/70">
-				<input type="checkbox" required bind:checked={consent} class="mt-0.5 accent-gold-500" />
+				<input type="checkbox" required bind:checked={consent} class="mt-0.5 accent-green-500" />
 				J'accepte que mes informations soient utilisées par IUMC pour traiter ma demande,
 				conformément à la politique de confidentialité.
 			</label>
@@ -272,7 +270,7 @@
 			<button
 				type="submit"
 				disabled={formState === 'sending'}
-				class="rounded-pill bg-gold-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-gold-600 active:scale-[0.98] disabled:opacity-60"
+				class="rounded-pill bg-green-500 px-6 py-3 text-sm font-medium text-ink-950 transition-transform hover:bg-green-600 active:scale-[0.98] disabled:opacity-60"
 			>
 				{formState === 'sending' ? 'Envoi en cours…' : 'Envoyer ma demande'}
 			</button>

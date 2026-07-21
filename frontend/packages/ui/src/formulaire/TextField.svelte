@@ -12,7 +12,8 @@
 		autocomplete,
 		list,
 		placeholder,
-		minlength
+		minlength,
+		compact = false
 	}: {
 		id: string;
 		label: string;
@@ -24,6 +25,8 @@
 		list?: string;
 		placeholder?: string;
 		minlength?: number;
+		/** Sans label visible (tooltip au survol à la place) — barres d'outils/filtres compacts. */
+		compact?: boolean;
 	} = $props();
 
 	const isPassword = type === 'password';
@@ -31,8 +34,10 @@
 	const inputType = $derived(isPassword ? (revealed ? 'text' : 'password') : type);
 </script>
 
-<div class="flex flex-col gap-2">
-	<label for={id} class="text-sm font-medium text-ink-900">{label}</label>
+<div class={compact ? 'group relative' : 'flex flex-col gap-2'}>
+	{#if !compact}
+		<label for={id} class="text-sm font-medium text-ink-900">{label}</label>
+	{/if}
 	<div class="relative">
 		<Icon size={18} class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-800/40" />
 		<input
@@ -43,8 +48,9 @@
 			{list}
 			{placeholder}
 			{minlength}
+			aria-label={compact ? label : undefined}
 			bind:value
-			class={`w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pl-10 text-sm text-ink-950 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none ${isPassword ? 'pr-10' : 'pr-3'}`}
+			class={`w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pl-10 text-sm text-ink-950 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none ${isPassword ? 'pr-10' : 'pr-3'}`}
 		/>
 		{#if isPassword}
 			<button
@@ -62,4 +68,11 @@
 			</button>
 		{/if}
 	</div>
+	{#if compact}
+		<span
+			class="pointer-events-none absolute top-full left-0 z-20 mt-2 whitespace-nowrap rounded-input bg-ink-950 px-2.5 py-1.5 text-xs font-medium text-paper-50 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+		>
+			{label}
+		</span>
+	{/if}
 </div>

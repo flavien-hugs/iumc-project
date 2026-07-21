@@ -11,8 +11,8 @@ export const REQUEST_STATUS_LABELS: Record<string, string> = {
 };
 
 export const REQUEST_STATUS_CLASSES: Record<string, string> = {
-	new: 'bg-gold-500/15 text-gold-600',
-	to_contact: 'bg-gold-500/15 text-gold-600',
+	new: 'bg-green-500/15 text-green-600',
+	to_contact: 'bg-green-500/15 text-green-600',
 	appointment_scheduled: 'bg-ink-900/10 text-ink-900',
 	in_progress: 'bg-ink-900/10 text-ink-900',
 	awaiting_client: 'bg-ink-900/10 text-ink-900',

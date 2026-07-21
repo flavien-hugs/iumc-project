@@ -212,13 +212,13 @@
 					groupLabel: 'text-paper-100/40',
 					divider: 'border-paper-100/10',
 					inactive: 'text-paper-100/75 hover:bg-paper-50/5 hover:text-paper-50',
-					active: 'bg-gold-500/15 font-medium text-gold-500'
+					active: 'bg-green-500/15 font-medium text-green-500'
 				}
 			: {
 					groupLabel: 'text-ink-800/50',
 					divider: 'border-ink-900/10',
 					inactive: 'text-ink-800 hover:bg-ink-900/5 hover:text-ink-950',
-					active: 'bg-gold-500/15 font-medium text-gold-600'
+					active: 'bg-green-500/15 font-medium text-green-600'
 				}}
 	{#each groups as group (group.label)}
 		{#if group.items.length > 0}
@@ -238,13 +238,13 @@
 					<span class="relative">
 						<item.icon size={18} />
 						{#if isNotifications && unreadCount > 0 && iconOnly}
-							<span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-gold-500"></span>
+							<span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-green-500"></span>
 						{/if}
 					</span>
 					{#if !iconOnly}
 						<span class="flex-1 text-left">{item.label}</span>
 						{#if isNotifications && unreadCount > 0}
-							<span class="rounded-pill bg-gold-500 px-2 py-0.5 text-xs font-semibold text-ink-950">
+							<span class="rounded-pill bg-green-500 px-2 py-0.5 text-xs font-semibold text-ink-950">
 								{unreadCount}
 							</span>
 						{/if}
@@ -341,9 +341,9 @@
 		<!-- Colonne de contenu : le bandeau mobile reste fixe, seul <main> défile. -->
 		<div class="flex min-w-0 flex-1 flex-col overflow-hidden">
 			<header
-				class="flex h-14 shrink-0 items-center justify-between border-b border-ink-900/10 bg-paper-50 px-4 md:hidden"
+				class="flex h-14 shrink-0 items-center justify-between border-b border-ink-900/10 bg-paper-50 px-4 md:px-6"
 			>
-				<div class="flex items-center gap-2">
+				<div class="flex items-center gap-2 md:hidden">
 					<button
 						type="button"
 						onclick={() => (mobileNavOpen = true)}
@@ -354,19 +354,25 @@
 					</button>
 					<a href="/admin" class="font-display text-xl font-semibold text-ink-950">IUMC</a>
 				</div>
+				<span class="hidden md:block"></span>
 				<div class="flex items-center gap-1">
 					<button
 						type="button"
 						onclick={openNotifications}
 						aria-label="Notifications"
-						class="relative p-2 text-ink-800"
+						class="relative p-2 text-ink-800 hover:text-ink-950"
 					>
 						<Bell size={20} />
 						{#if unreadCount > 0}
-							<span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-gold-500"></span>
+							<span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-green-500"></span>
 						{/if}
 					</button>
-					<button type="button" onclick={logout} aria-label="Se déconnecter" class="p-2 text-ink-800">
+					<button
+						type="button"
+						onclick={logout}
+						aria-label="Se déconnecter"
+						class="p-2 text-ink-800 hover:text-ink-950 md:hidden"
+					>
 						<SignOut size={20} />
 					</button>
 				</div>
@@ -411,7 +417,7 @@
 				<button
 					type="button"
 					onclick={markAllRead}
-					class="self-start text-sm font-medium text-ink-900 hover:text-gold-600"
+					class="self-start text-sm font-medium text-ink-900 hover:text-green-600"
 				>
 					Tout marquer comme lu
 				</button>
@@ -431,7 +437,7 @@
 								class="flex w-full items-start gap-3 py-3 text-left hover:bg-ink-900/4"
 							>
 								<span
-									class={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${item.is_read ? 'bg-transparent' : 'bg-gold-500'}`}
+									class={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${item.is_read ? 'bg-transparent' : 'bg-green-500'}`}
 								></span>
 								<span class="flex-1">
 									<span class={`block text-sm ${item.is_read ? 'text-ink-800/70' : 'font-medium text-ink-950'}`}>

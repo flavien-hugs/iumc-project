@@ -27,7 +27,7 @@
 			{rows}
 			{required}
 			bind:value
-			class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pr-3 pl-10 text-sm text-ink-950 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none"
+			class="w-full rounded-input border border-ink-900/20 bg-paper-50 py-2.5 pr-3 pl-10 text-sm text-ink-950 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
 		></textarea>
 	</div>
 </div>

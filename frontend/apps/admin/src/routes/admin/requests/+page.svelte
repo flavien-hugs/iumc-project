@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { ArrowsDownUp, CalendarBlank, Funnel, MagnifyingGlass, Tray } from 'phosphor-svelte';
+	import {
+		ArrowsDownUp,
+		CalendarBlank,
+		CheckCircle,
+		FloppyDisk,
+		Funnel,
+		FunnelSimple,
+		MagnifyingGlass,
+		Tray
+	} from 'phosphor-svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { apiCall, ApiError } from '@iumc/api';
 	import Drawer from '@iumc/ui/composants/Drawer.svelte';
@@ -24,9 +33,14 @@
 	let dateFrom = $state(data.dateFrom);
 	let dateTo = $state(data.dateTo);
 
+	const statusFormOptions = Object.entries(REQUEST_STATUS_LABELS).map(([value, label]) => ({
+		value,
+		label
+	}));
+
 	const statusOptions = [
 		{ value: '', label: 'Tous les statuts' },
-		...Object.entries(REQUEST_STATUS_LABELS).map(([value, label]) => ({ value, label }))
+		...statusFormOptions
 	];
 
 	function applyFilters(overrides: Record<string, string> = {}) {
@@ -138,7 +152,7 @@
 				applyFilters();
 			}}
 		>
-			<div class="w-64">
+			<div class="w-80">
 				<TextField
 					id="q"
 					label="Recherche"
@@ -146,10 +160,11 @@
 					icon={MagnifyingGlass}
 					placeholder="Référence, nom, téléphone, ville…"
 					bind:value={searchText}
+					compact
 				/>
 			</div>
 
-			<div class="w-56">
+			<div class="w-64">
 				<SearchSelect
 					id="status-filter"
 					label="Statut"
@@ -158,16 +173,22 @@
 					bind:value={statusValue}
 					placeholder="Tous les statuts"
 					onchange={() => applyFilters()}
+					compact
 				/>
 			</div>
 
-			<TextField id="date-from" label="Reçue depuis le" type="date" icon={CalendarBlank} bind:value={dateFrom} />
-			<TextField id="date-to" label="Jusqu'au" type="date" icon={CalendarBlank} bind:value={dateTo} />
+			<div class="w-48">
+				<TextField id="date-from" label="Reçue depuis le" type="date" icon={CalendarBlank} bind:value={dateFrom} compact />
+			</div>
+			<div class="w-48">
+				<TextField id="date-to" label="Jusqu'au" type="date" icon={CalendarBlank} bind:value={dateTo} compact />
+			</div>
 
 			<button
 				type="submit"
-				class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+				class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 			>
+				<FunnelSimple size={16} />
 				Filtrer
 			</button>
 			{#if hasActiveFilters}
@@ -182,15 +203,21 @@
 		</form>
 	{/snippet}
 	{#snippet actions()}
-		<button
-			type="button"
-			onclick={toggleSort}
-			title={data.sort === 'asc' ? 'Plus anciennes en premier' : 'Plus récentes en premier'}
-			class="inline-flex items-center gap-2 rounded-pill border border-ink-900/20 px-4 py-2.5 text-sm font-medium text-ink-900 hover:border-ink-900/40"
-		>
-			<ArrowsDownUp size={16} />
-			{data.sort === 'asc' ? 'Plus anciennes' : 'Plus récentes'}
-		</button>
+		<div class="group relative">
+			<button
+				type="button"
+				onclick={toggleSort}
+				aria-label={data.sort === 'asc' ? 'Plus anciennes en premier' : 'Plus récentes en premier'}
+				class="inline-flex items-center justify-center rounded-pill border border-ink-900/20 p-2.5 text-ink-900 hover:border-ink-900/40"
+			>
+				<ArrowsDownUp size={16} />
+			</button>
+			<span
+				class="pointer-events-none absolute top-full right-0 z-20 mt-2 whitespace-nowrap rounded-input bg-ink-950 px-2.5 py-1.5 text-xs font-medium text-paper-50 opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+			>
+				{data.sort === 'asc' ? 'Plus anciennes en premier' : 'Plus récentes en premier'}
+			</span>
+		</div>
 	{/snippet}
 </Toolbar>
 
@@ -285,18 +312,14 @@
 			</dl>
 
 			<form class="flex flex-col gap-3" onsubmit={savePreviewStatus}>
-				<div class="flex flex-col gap-1.5">
-					<label for="preview-status" class="text-sm font-medium text-ink-900">Statut</label>
-					<select
-						id="preview-status"
-						bind:value={previewStatus}
-						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
-					>
-						{#each Object.entries(REQUEST_STATUS_LABELS) as [value, label] (value)}
-							<option {value}>{label}</option>
-						{/each}
-					</select>
-				</div>
+				<SearchSelect
+					id="preview-status"
+					label="Statut"
+					icon={CheckCircle}
+					options={statusFormOptions}
+					required
+					bind:value={previewStatus}
+				/>
 
 				{#if previewError}
 					<p class="rounded-input bg-ink-900/5 px-3 py-2.5 text-sm text-ink-900" role="alert">
@@ -307,8 +330,9 @@
 				<button
 					type="submit"
 					disabled={previewSaving}
-					class="rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+					class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 				>
+					<FloppyDisk size={16} />
 					Enregistrer le statut
 				</button>
 			</form>

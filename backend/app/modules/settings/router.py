@@ -76,46 +76,53 @@ DEFAULT_ABOUT = {
     "legal_form": "Entreprise individuelle de droit ivoirien",
     "headquarters": "Bouaké, quartier Koko",
     "vision": (
-        "<p>Devenir, à l'horizon 2030, une holding constituant une porte d'accès de "
-        "référence en Côte d'Ivoire et en Afrique à <strong>la sécurité juridique</strong> "
-        "nécessaire à la réalisation sereine des projets personnels et professionnels.</p>"
+        "<p>Devenir, à l'horizon 2030, une holding qui soit la porte d'accès de référence, "
+        "en Côte d'Ivoire et en Afrique, à <strong>la sécurité juridique absolue</strong> "
+        "dont chacun a besoin, où qu'il soit, pour la réalisation sereine de son projet "
+        "personnel ou professionnel.</p>"
     ),
     "missions": [
-        "Services juridiques liés aux activités commerciales, foncières, immobilières et industrielles",
-        "Accompagnement foncier et immobilier",
+        "Services juridiques dans les domaines commercial, de l'immobilier et industriel — le cœur de l'objet social d'IUMC",
+        "Accompagnement foncier et immobilier, urbain comme industriel",
         "Audit documentaire et vérification de conformité",
-        "Accompagnement des entreprises et investisseurs",
+        "Assistance aux entreprises, investisseurs et communautés villageoises",
         "Prévention et accompagnement dans la gestion des litiges fonciers",
-        "Développement futur d'activités agropastorales, commerciales et logistiques",
+        "À moyen terme : activités agropastorales, puis, à titre accessoire, transport de marchandises et commerce d'aliments pour bovins",
     ],
     "values": [
         "Respect", "Intégrité", "Transparence", "Excellence", "Orientation client", "Innovation",
     ],
     "differentiators": [
         {
-            "title": "Un interlocuteur unique",
+            "title": "Un relais fiable des services de l'État",
             "description": (
-                "Un seul point de contact pour coordonner les volets juridiques, fonciers, "
-                "immobiliers et industriels d'un même projet."
+                "Dans l'écosystème de l'ingénierie immobilière, IUMC agit comme un acteur "
+                "clé et un relais fiable des services de l'État auprès des citoyens, des "
+                "opérateurs économiques et des investisseurs industriels."
             ),
         },
         {
-            "title": "Un accompagnement pluridisciplinaire",
+            "title": "Des packages de services sur mesure",
             "description": (
-                "Des offres construites autour de la situation réelle du client, plutôt "
-                "que d'un service isolé."
+                "Des offres pluridisciplinaires assemblées selon la situation réelle de "
+                "chaque client — particulier, entreprise, communauté villageoise ou "
+                "industriel — plutôt qu'un service isolé."
             ),
         },
         {
-            "title": "Une lisibilité des démarches",
+            "title": "Un modèle de gestion intégrée",
             "description": (
-                "Des étapes, documents et délais présentés clairement avant l'engagement "
-                "d'une prestation."
+                "Un seul interlocuteur coordonne les volets juridique, foncier, immobilier "
+                "et industriel d'un même projet, du premier échange à l'aboutissement du "
+                "dossier."
             ),
         },
         {
-            "title": "Un réseau progressif",
-            "description": "Une présence qui s'étend ville après ville, depuis le siège de Bouaké.",
+            "title": "Un maillage progressif du territoire",
+            "description": (
+                "Une présence qui s'étend ville après ville depuis le siège de Bouaké, "
+                "pour rapprocher les services de leurs bénéficiaires."
+            ),
         },
     ],
 }

@@ -69,7 +69,7 @@
 			>
 				<button type="button" onclick={() => openItem(item)} class="flex w-full items-center gap-3 text-left">
 					{#if !item.is_read}
-						<span class="h-2 w-2 shrink-0 rounded-full bg-gold-500" aria-label="Non lue"></span>
+						<span class="h-2 w-2 shrink-0 rounded-full bg-green-500" aria-label="Non lue"></span>
 					{/if}
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-ink-950">{item.title}</p>

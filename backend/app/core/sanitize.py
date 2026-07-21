@@ -9,8 +9,8 @@ attributs à ce que la barre d'outils peut réellement produire.
 
 import bleach
 
-ALLOWED_TAGS = ["p", "h2", "h3", "strong", "em", "ul", "ol", "li", "a", "br"]
-ALLOWED_ATTRIBUTES = {"a": ["href", "rel", "target"]}
+ALLOWED_TAGS = ["p", "h2", "h3", "strong", "em", "ul", "ol", "li", "a", "br", "img"]
+ALLOWED_ATTRIBUTES = {"a": ["href", "rel", "target"], "img": ["src", "alt"]}
 ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
 
 

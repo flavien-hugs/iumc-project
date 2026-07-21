@@ -29,12 +29,12 @@
 			onclick={() => (active = tab.id)}
 			onkeydown={(event) => onKeydown(event, i)}
 			class={`group relative pb-3 text-sm transition-colors ${
-				active === tab.id ? 'font-medium text-gold-600' : 'text-ink-800 hover:text-gold-600'
+				active === tab.id ? 'font-medium text-green-600' : 'text-ink-800 hover:text-green-600'
 			}`}
 		>
 			{tab.label}
 			<span
-				class={`absolute -bottom-px left-0 h-[2px] w-full origin-left bg-gold-500 transition-transform duration-300 ${
+				class={`absolute -bottom-px left-0 h-[2px] w-full origin-left bg-green-500 transition-transform duration-300 ${
 					active === tab.id ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
 				}`}
 			></span>

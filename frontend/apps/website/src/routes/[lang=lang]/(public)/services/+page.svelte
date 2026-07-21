@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { ArrowRight } from 'phosphor-svelte';
 	import { divisionIcon } from '$lib/content';
-	import SenufoFrieze from '$lib/illustrations/SenufoFrieze.svelte';
+	import Seo from '$lib/components/Seo.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 </script>
 
-<svelte:head>
-	<title>Nos pôles d'activité, IUMC</title>
-	<meta
-		name="description"
-		content="Découvrez les pôles d'intervention d'IUMC : services juridiques, foncier et immobilier, agropastoral."
-	/>
-</svelte:head>
+<Seo
+	title="Nos pôles d'activité, IUMC"
+	description="Découvrez les pôles d'intervention d'IUMC : services juridiques, foncier et immobilier, agropastoral."
+/>
 
 <section class="mx-auto max-w-7xl px-6 pt-16 pb-8 lg:px-10" use:reveal>
 	<h1 class="max-w-[20ch] text-4xl font-semibold text-ink-950 md:text-5xl">
@@ -31,17 +29,23 @@
 
 {#each data.divisions as division, i (division.slug)}
 	{@const Icon = divisionIcon(division.slug)}
-	<section class={`relative overflow-hidden ${i % 2 === 1 ? 'bg-paper-100' : ''}`}>
-		<Icon class="pointer-events-none absolute -right-10 -bottom-12 hidden h-56 w-56 text-ink-900/5 md:block" />
+	{@const reversed = i % 2 === 1}
+	<section class={`relative overflow-hidden ${reversed ? 'bg-paper-100' : ''}`}>
+		<Icon
+			class={`pointer-events-none absolute -bottom-12 hidden h-56 w-56 text-ink-900/5 md:block ${reversed ? '-left-10 scale-x-[-1]' : '-right-10'}`}
+		/>
 		<div class="relative mx-auto max-w-7xl px-6 py-14 lg:px-10">
-			<div class="flex flex-col gap-10 md:flex-row md:items-start">
+			<div class={`flex flex-col gap-10 md:items-start ${reversed ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
 				<div class="md:w-1/3" use:reveal>
-					<Icon class="h-10 w-10 text-ink-900" />
+					<span class="font-display text-sm tracking-[0.35em] text-green-500/60">
+						{String(i + 1).padStart(2, '0')}
+					</span>
+					<Icon class="mt-3 h-10 w-10 text-ink-900" />
 					<div class="mt-4 flex items-center gap-3">
 						<h2 class="text-2xl font-semibold text-ink-950">{division.name}</h2>
 						{#if division.status === 'coming_soon'}
 							<span
-								class="rounded-pill bg-forest-600/10 px-3 py-1 text-xs font-medium text-forest-600"
+								class="rounded-pill bg-cyan-600/10 px-3 py-1 text-xs font-medium text-cyan-600"
 							>
 								Bientôt disponible
 							</span>
@@ -67,7 +71,9 @@
 									href={`/fr/services/${division.slug}/${service.slug}`}
 									class="group flex items-start gap-2 rounded-input px-2 py-2.5 text-sm text-ink-800 hover:bg-ink-900/5 hover:text-ink-950"
 								>
-									<span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold-500"></span>
+									<span
+										class="mt-2 h-1 w-1 shrink-0 rounded-full bg-green-500 transition-transform group-hover:scale-150"
+									></span>
 									<span>{service.title}</span>
 								</a>
 							{/each}

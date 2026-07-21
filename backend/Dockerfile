@@ -31,7 +31,7 @@ COPY --chown=iumc:iumc alembic.ini ./
 USER iumc
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
-	CMD python -c "import urllib.request as u; u.urlopen('http://localhost:8000/openapi.json', timeout=2)" || exit 1
+    CMD python -c "import urllib.request as u; u.urlopen('http://localhost:8000/openapi.json', timeout=2)" || exit 1
 
 # --proxy-headers/--forwarded-allow-ips: le backend n'est jamais exposé
 # directement en prod (voir infra/docker-compose.prod.yml, ports: []), seul

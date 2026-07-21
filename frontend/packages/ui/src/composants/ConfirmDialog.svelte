@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Trash } from 'phosphor-svelte';
 	import { fade, scale } from 'svelte/transition';
 
 	let {
@@ -98,7 +99,7 @@
 						bind:value={typedValue}
 						autocomplete="off"
 						spellcheck="false"
-						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
+						class="rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-green-500 focus:outline-none"
 					/>
 				</div>
 			{/if}
@@ -121,12 +122,15 @@
 					type="button"
 					onclick={handleConfirm}
 					disabled={!canConfirm || loading}
-					class={`rounded-pill px-4 py-2 text-sm font-medium disabled:opacity-50 ${
+					class={`inline-flex items-center gap-2 rounded-pill px-4 py-2 text-sm font-medium disabled:opacity-50 ${
 						destructive
 							? 'bg-ink-950 text-paper-50 hover:bg-ink-900'
-							: 'bg-gold-500 text-ink-950 hover:bg-gold-600'
+							: 'bg-green-500 text-ink-950 hover:bg-green-600'
 					}`}
 				>
+					{#if destructive && !loading}
+						<Trash size={14} />
+					{/if}
 					{loading ? 'Patientez…' : confirmLabel}
 				</button>
 			</div>

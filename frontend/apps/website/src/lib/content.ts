@@ -25,6 +25,13 @@ export interface PublicDivision {
 	services: PublicService[];
 }
 
+export interface PublicPage<T> {
+	items: T[];
+	total: number;
+	page: number;
+	page_size: number;
+}
+
 export interface PublicArticleSummary {
 	slug: string;
 	title: string;

@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.core.db import DbSession
 from app.core.pagination import Page, PageParams, paginate
@@ -96,9 +96,28 @@ def _to_row(location: Location) -> LocationRow:
 
 @router.get("", response_model=Page[LocationRow])
 async def list_locations(
-    db: DbSession, _: CurrentUser, params: PageParams = Depends()
+    db: DbSession,
+    _: CurrentUser,
+    q: str | None = None,
+    status_filter: LocationStatus | None = None,
+    is_visible: bool | None = None,
+    params: PageParams = Depends(),
 ) -> Page[LocationRow]:
-    query = select(Location).order_by(Location.status, Location.city)
+    query = select(Location)
+    if status_filter is not None:
+        query = query.where(Location.status == status_filter)
+    if is_visible is not None:
+        query = query.where(Location.is_visible == is_visible)
+    if q:
+        pattern = f"%{q.strip()}%"
+        query = query.where(
+            or_(
+                Location.name.ilike(pattern),
+                Location.city.ilike(pattern),
+                Location.district.ilike(pattern),
+            )
+        )
+    query = query.order_by(Location.status, Location.city)
     rows, total = await paginate(db, query, params)
     return Page(
         items=[_to_row(row[0]) for row in rows],

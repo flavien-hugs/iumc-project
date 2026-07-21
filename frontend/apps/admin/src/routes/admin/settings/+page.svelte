@@ -5,6 +5,7 @@
 		Clock,
 		EnvelopeSimple,
 		FacebookLogo,
+		FloppyDisk,
 		LinkedinLogo,
 		MapPin,
 		Phone,
@@ -200,7 +201,7 @@
 				</p>
 			{/if}
 			{#if contactSaved}
-				<p class="rounded-input bg-gold-500/10 px-3 py-2.5 text-sm text-gold-600">
+				<p class="rounded-input bg-green-500/10 px-3 py-2.5 text-sm text-green-600">
 					Coordonnées enregistrées.
 				</p>
 			{/if}
@@ -208,8 +209,9 @@
 			<button
 				type="submit"
 				disabled={contactSaving}
-				class="self-start rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 self-start rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
+				<FloppyDisk size={16} />
 				Enregistrer
 			</button>
 		</form>
@@ -225,14 +227,15 @@
 				</p>
 			{/if}
 			{#if aboutSaved}
-				<p class="rounded-input bg-gold-500/10 px-3 py-2.5 text-sm text-gold-600">Identité enregistrée.</p>
+				<p class="rounded-input bg-green-500/10 px-3 py-2.5 text-sm text-green-600">Identité enregistrée.</p>
 			{/if}
 
 			<button
 				type="submit"
 				disabled={aboutSaving}
-				class="self-start rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 self-start rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
+				<FloppyDisk size={16} />
 				Enregistrer
 			</button>
 		</form>
@@ -252,7 +255,7 @@
 						<input
 							type="text"
 							bind:value={about.missions[i]}
-							class="flex-1 rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-gold-500 focus:outline-none"
+							class="flex-1 rounded-input border border-ink-900/20 bg-paper-50 px-3 py-2 text-sm text-ink-950 focus:border-green-500 focus:outline-none"
 						/>
 						<button
 							type="button"
@@ -267,7 +270,7 @@
 				<button
 					type="button"
 					onclick={addMission}
-					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-gold-600"
+					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-green-600"
 				>
 					<Plus size={14} />
 					Ajouter une mission
@@ -280,7 +283,7 @@
 				</p>
 			{/if}
 			{#if aboutSaved}
-				<p class="rounded-input bg-gold-500/10 px-3 py-2.5 text-sm text-gold-600">
+				<p class="rounded-input bg-green-500/10 px-3 py-2.5 text-sm text-green-600">
 					Vision et missions enregistrées.
 				</p>
 			{/if}
@@ -288,8 +291,9 @@
 			<button
 				type="submit"
 				disabled={aboutSaving}
-				class="self-start rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 self-start rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
+				<FloppyDisk size={16} />
 				Enregistrer
 			</button>
 		</form>
@@ -319,7 +323,7 @@
 				<button
 					type="button"
 					onclick={addValue}
-					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-gold-600"
+					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-green-600"
 				>
 					<Plus size={14} />
 					Ajouter une valeur
@@ -359,7 +363,7 @@
 				<button
 					type="button"
 					onclick={addDifferentiator}
-					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-gold-600"
+					class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-ink-900 hover:text-green-600"
 				>
 					<Plus size={14} />
 					Ajouter un élément
@@ -372,7 +376,7 @@
 				</p>
 			{/if}
 			{#if aboutSaved}
-				<p class="rounded-input bg-gold-500/10 px-3 py-2.5 text-sm text-gold-600">
+				<p class="rounded-input bg-green-500/10 px-3 py-2.5 text-sm text-green-600">
 					Valeurs et différenciateurs enregistrés.
 				</p>
 			{/if}
@@ -380,8 +384,9 @@
 			<button
 				type="submit"
 				disabled={aboutSaving}
-				class="self-start rounded-pill bg-gold-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600 disabled:opacity-60"
+				class="inline-flex items-center gap-2 self-start rounded-pill bg-green-500 px-6 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600 disabled:opacity-60"
 			>
+				<FloppyDisk size={16} />
 				Enregistrer
 			</button>
 		</form>

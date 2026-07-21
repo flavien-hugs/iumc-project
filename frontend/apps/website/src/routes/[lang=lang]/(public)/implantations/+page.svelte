@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { MapPin, Phone, WhatsappLogo } from 'phosphor-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import CoteDIvoireMap from '$lib/illustrations/CoteDIvoireMap.svelte';
-	import KenteMotif from '$lib/illustrations/KenteMotif.svelte';
+	import KenteMotif from '@iumc/ui/illustrations/KenteMotif.svelte';
+	import SenufoFrieze from '@iumc/ui/illustrations/SenufoFrieze.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import { LOCATION_STATUS_LABELS } from '$lib/content';
 	import type { PageProps } from './$types';
@@ -12,27 +14,31 @@
 	const otherLocations = $derived(data.locations.filter((item) => item.status !== 'headquarters'));
 </script>
 
-<svelte:head>
-	<title>Nos implantations, IUMC</title>
-	<meta
-		name="description"
-		content="Le siège d'IUMC est à Bouaké. Découvrez les villes de Côte d'Ivoire concernées par l'expansion progressive d'IUMC."
-	/>
-</svelte:head>
+<Seo
+	title="Nos implantations, IUMC"
+	description="Le siège d'IUMC est à Bouaké. Découvrez les villes de Côte d'Ivoire concernées par l'expansion progressive d'IUMC."
+/>
 
 <section class="mx-auto grid max-w-7xl items-center gap-12 overflow-hidden px-6 pt-16 pb-16 md:grid-cols-2 lg:px-10">
 	<div use:reveal>
-		<h1 class="text-4xl font-semibold text-ink-950 md:text-5xl">Nos implantations</h1>
+		<p class="text-xs font-medium tracking-[0.25em] text-green-600 uppercase">
+			{otherLocations.length + 1} villes, une seule adresse aujourd'hui
+		</p>
+		<h1 class="mt-4 text-4xl font-semibold text-ink-950 md:text-5xl">Nos implantations</h1>
 		<p class="mt-4 max-w-[50ch] text-ink-800/80">
 			Le siège d'IUMC est situé à Bouaké. L'entreprise prévoit d'étendre
-			<span class="font-bold text-gold-600">progressivement</span> sa présence à plusieurs
+			<span class="font-bold text-green-600">progressivement</span> sa présence à plusieurs
 			villes de Côte d'Ivoire.
 		</p>
 	</div>
 	<div class="parallax-lent mx-auto w-full max-w-sm md:max-w-none" use:reveal={{ delay: 120 }}>
-		<CoteDIvoireMap class="h-auto w-full" />
+		<CoteDIvoireMap labels class="h-auto w-full" />
 	</div>
 </section>
+
+<div class="mx-auto max-w-7xl px-6 lg:px-10">
+	<SenufoFrieze class="h-5 w-full text-gold-500/30" />
+</div>
 
 {#if headquarters}
 	<section class="mx-auto max-w-7xl px-6 pb-10 lg:px-10">
@@ -45,7 +51,7 @@
 				class="pointer-events-none absolute inset-0 h-full w-full text-paper-50 opacity-5"
 			/>
 			<div class="relative">
-				<span class="rounded-pill bg-gold-500/15 px-3 py-1 text-xs font-medium text-gold-500">
+				<span class="rounded-pill bg-green-500/15 px-3 py-1 text-xs font-medium text-green-500">
 					{LOCATION_STATUS_LABELS[headquarters.status] ?? headquarters.status}
 				</span>
 				<h2 class="mt-3 text-2xl font-semibold">{headquarters.city}</h2>
@@ -71,7 +77,7 @@
 						href={`https://wa.me/${headquarters.whatsapp.replace(/\D/g, '')}`}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 rounded-pill bg-gold-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-gold-600"
+						class="inline-flex items-center gap-2 rounded-pill bg-green-500 px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-green-600"
 					>
 						<WhatsappLogo size={16} weight="fill" />
 						WhatsApp

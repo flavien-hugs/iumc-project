@@ -170,7 +170,7 @@
 					<button
 						type="button"
 						onclick={() => selected && setStatus(selected.id, 'confirmed')}
-						class="rounded-pill bg-gold-500 px-4 py-2 text-sm font-medium text-ink-950 hover:bg-gold-600"
+						class="rounded-pill bg-green-500 px-4 py-2 text-sm font-medium text-ink-950 hover:bg-green-600"
 					>
 						Confirmer
 					</button>
