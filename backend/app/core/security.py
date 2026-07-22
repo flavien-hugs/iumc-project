@@ -4,9 +4,8 @@ from typing import Literal
 import bcrypt
 import jwt
 
-from app.core.config import get_settings
+from app.core.config import settings
 
-settings = get_settings()
 
 TokenType = Literal["access", "refresh"]
 

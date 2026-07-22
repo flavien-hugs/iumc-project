@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from app.core.config import get_settings
+from app.core.config import settings
 from app.core.db import DbSession
 from app.core.pagination import Page, PageParams, paginate
 from app.core.storage import delete_file, full_path, save_bytes
@@ -14,7 +14,6 @@ from app.models import MediaFile, UserRole
 from app.modules.audit.service import log_action
 from app.modules.auth.deps import CurrentUser, require_roles
 
-settings = get_settings()
 
 # Formats autorisés dans la médiathèque (CDC section 8.11).
 ALLOWED_MEDIA_EXTENSIONS = {

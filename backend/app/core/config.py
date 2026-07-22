@@ -1,11 +1,12 @@
+__all__ = ["settings"]
+
+
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
-
     environment: str = "development"
     api_prefix: str = "/api/v1"
 
@@ -17,12 +18,7 @@ class Settings(BaseSettings):
     jwt_access_token_expires_minutes: int = 15
     jwt_refresh_token_expires_days: int = 7
 
-    cors_allow_origins: list[str] = [
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:3000",
-        "http://localhost:3001",
-    ]
+    cors_allow_origins: list[str] = ["*"]
 
     storage_backend: str = "local"
     storage_local_path: str = "/data/media"
@@ -37,8 +33,13 @@ class Settings(BaseSettings):
 
     # Base des liens envoyés par e-mail (réinitialisation de mot de passe).
     admin_base_url: str = "http://localhost:3001"
+    seed_admin_email: str = "admin@iumc.com"
+    seed_admin_password: str = "p@55word"
 
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+settings = get_settings()

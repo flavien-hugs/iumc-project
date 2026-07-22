@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Request, Response, status
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 
-from app.core.config import get_settings
+from app.core.config import settings
 from app.core.db import DbSession
 from app.core.rate_limit import client_ip, limit_submissions
 from app.core.redis import get_redis
@@ -16,7 +16,7 @@ from app.modules.audit.service import log_action
 from app.modules.auth.deps import CurrentUser, get_user_by_email
 from app.modules.users.tasks import send_password_reset
 
-settings = get_settings()
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 MAX_LOGIN_ATTEMPTS = 5
